@@ -13,6 +13,15 @@ SHORT_DESCRIPTION = 'Helper application to build your story'
 LONG_DESCRITPYION = """StoryBuilder is the helper application that build your story, novel, screenplay or game scripts.
 """
 
+DATA_FILES = [
+        'data/*.yml',
+        'data/*.md',
+        'data/common/*.yml',
+        'data/example/*.yml',
+        'data/example/*.md',
+        'data/temp/*.yml',
+        ]
+
 setup(
         name=PACKAGE_NAME,
         version=VERSION,
@@ -25,7 +34,7 @@ setup(
         ],
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
-        package_data={'sms': ['data/*.yml', 'data/*.md']},
+        package_data={'sms': DATA_FILES},
         packages=find_packages(),
         tests_require=['pytest'],
 )
