@@ -1,0 +1,12 @@
+#!SMSdata
+person:
+  tag: tagname
+  name: 名前
+  fullname: 苗字,名前
+  age: 99
+  sex: male
+  job: 職業
+  belong: 所属
+  calling:
+    me: 私
+  note: 備考

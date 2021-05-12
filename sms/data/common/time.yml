@@ -1,0 +1,38 @@
+#!SMSdata
+time:
+  earlymorning:
+    name: 早朝
+    clock: '6:00'
+  morning:
+    name: 朝
+    clock: '8:00'
+  midmorning:
+    name: 午前
+    clock: '10:00'
+  noon:
+    name: 正午
+    clock: '12:00'
+  afternoon:
+    name: 午後
+    clock: '14:00'
+  afterschool:
+    name: 黄昏
+    clock: '16:00'
+  evening:
+    name: 夕方
+    clock: '18:00'
+  night:
+    name: 夜
+    clock: '20:00'
+  latenight:
+    name: 夜半
+    clock: '22:00'
+  midnight:
+    name: 夜中
+    clock: '24:00'
+  deepnight:
+    name: 深夜
+    clock: '2:00'
+  dawn:
+    name: 未明
+    clock: '4:00'

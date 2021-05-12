@@ -1,0 +1,8 @@
+#!SMSdata
+config:
+  asset: assets
+  source: src
+  entrypoint: main
+  columns: 20
+  rows: 20
+  mobs: 20

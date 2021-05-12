@@ -1,0 +1,15 @@
+#!SMSdata
+book:
+  title: ストーリータイトル
+  copy: コピィ
+  theme: テーマ
+  genre: ジャンル
+  target: 対象
+  contests: コンテスト
+  caution: 注意書き
+  sites:
+    - 小説家になろう
+  tags:
+    - novel
+  version: "0.0.1"
+  note: 備考
