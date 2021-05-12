@@ -153,7 +153,7 @@ class Converter(object):
             return after_day_str_from(year, mon, day, 0, _addition)
         elif 'week' in data:
             addition = data.replace('week', '').replace('next', '')
-            _addition = int(addition) if addtion else 1
+            _addition = int(addition) if addition else 1
             return after_day_str_from(year, mon, day, 0, 7 * _addition)
         else:
             return after_day_str_from(year, mon, day, 0, 1)
