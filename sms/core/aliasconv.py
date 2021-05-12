@@ -23,7 +23,7 @@ __all__ = (
 
 
 # Define Constants
-PROCC = 'ALIAS CONV'
+PROC = 'ALIAS CONV'
 
 
 # Main
@@ -52,6 +52,8 @@ def apply_alias(data: list) -> list:
             tmp.append(ret)
         else:
             tmp.append(record)
+
+    logger.debug(msg.PROC_MESSAGE.format(proc=f"completed apply alias: {PROC}"))
 
     return tmp
 

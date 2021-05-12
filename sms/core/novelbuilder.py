@@ -8,7 +8,7 @@ import re
 
 
 # My Modules
-from sms.commons.format import get_br, get_breakline, get_indent
+from sms.commons.format import get_br, get_indent
 from sms.commons.format import join_descs
 from sms.commons.format import markdown_comment_style_of
 from sms.db.outputsdata import OutputsData
@@ -354,7 +354,7 @@ def _conv_dialogue_mark_in_dialogues(data: list) -> list:
             if line.startswith(':'):
                 tmp.append(f"「{line[1:]}」")
             elif re.search(r'^[a-zA-Z0-9]*:', line):
-                part = re.search(r'^[a-zA-Z0-9]*:',line).group()
+                part = re.search(r'^[a-zA-Z0-9]*:', line).group()
                 tmp.append(f"「{line.replace(part, '')}」")
         else:
             tmp.append(line)

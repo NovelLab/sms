@@ -12,7 +12,7 @@ from sms.utils.strings import rid_rn
 
 
 __all__ = (
-        'raw_src_object_from',
+        'raw_src_objects_from',
         )
 
 

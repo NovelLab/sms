@@ -4,7 +4,7 @@
 import os
 
 # My Modules
-from sms.syss.paths import DIR_PROJECT, DIR_BUILD_NAME
+from sms.syss.paths import DIR_PROJECT
 
 
 __all__ = (

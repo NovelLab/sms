@@ -25,6 +25,7 @@ DEBUG_FORMATTER = logging.Formatter("%(levelname)-8s %(asctime)s [%(module)s.%(f
 logger = None
 console_handler = None
 
+
 def init_logger(app_name: str, cache_dir: str) -> bool:
     assert isinstance(app_name, str)
     assert isinstance(cache_dir, str)

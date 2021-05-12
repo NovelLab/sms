@@ -62,6 +62,7 @@ def compile_codes(scenes: ScenesDB, assets: AssetsDB) -> StoryData:
         logger.error(msg.ERR_FAIL_MISSING_DATA.format(data=f"name tags: {PROC}"))
         return None
     tags_sorted = dict_sorted(tags)
+    # NOTE: current tags unused
 
     updated_alias = apply_alias(data)
     if not updated_alias:

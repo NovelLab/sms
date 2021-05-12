@@ -4,8 +4,6 @@
 
 
 # My Modules
-from sms.syss import messages as msg
-from sms.utils.log import logger
 
 
 __all__ = (

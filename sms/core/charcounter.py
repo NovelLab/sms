@@ -90,7 +90,6 @@ class CharCounter(object):
         indices = [0]
         titles = [['']]
         descs = [['']]
-        current = 0
 
         for record in data:
             assert isinstance(record, str)

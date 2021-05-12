@@ -3,7 +3,6 @@
 # Official Libraries
 
 
-
 def _with_data(text: str) -> str:
     assert isinstance(text, str)
 

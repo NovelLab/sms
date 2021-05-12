@@ -1,8 +1,6 @@
 """DB management module."""
 
 # Official Libraries
-import yaml
-from typing import Any
 
 
 # My Modules
@@ -16,7 +14,6 @@ from sms.db.srcs import SrcsDB
 from sms.objs.baseobject import SObject
 from sms.objs.rawsrc import RawSrc
 from sms.objs.scenecode import SceneCode
-from sms.syss.paths import DIR_PROJECT
 from sms.syss.paths import EXT_MARKDOWN, EXT_YAML
 from sms.syss import messages as msg
 from sms.utils import assertion

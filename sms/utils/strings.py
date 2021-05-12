@@ -106,7 +106,8 @@ def is_numeric(text: str) -> bool:
     return text.isnumeric()
 
 
-def just_string_of(text: str, limit: int, padding: str = ' ', is_right: bool=False) -> str:
+def just_string_of(text: str, limit: int, padding: str = ' ',
+        is_right: bool = False) -> str:
     assert isinstance(text, str)
     assert isinstance(limit, int)
     assert isinstance(padding, str)

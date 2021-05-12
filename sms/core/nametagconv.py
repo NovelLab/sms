@@ -13,7 +13,7 @@ from sms.objs.person import Person
 from sms.objs.rubi import Rubi
 from sms.objs.stage import Stage
 from sms.syss import messages as msg
-from sms.syss.paths import EXT_YAML, FILE_CONFIG
+from sms.syss.paths import FILE_CONFIG
 from sms.utils import assertion
 from sms.utils.fileio import read_file
 from sms.utils.log import logger

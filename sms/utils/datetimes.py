@@ -18,7 +18,10 @@ __all__ = (
         'next_month_str_from',
         )
 
+
+# Define Constants
 INT_STR = Union[int, str]
+
 
 # Main Functions
 def after_day_str_from(year: INT_STR, mon: INT_STR, day: INT_STR,

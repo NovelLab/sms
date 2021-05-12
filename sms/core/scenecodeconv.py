@@ -98,7 +98,7 @@ class Converter(object):
     def to_action(line: str) -> Action:
         assert isinstance(line, str)
 
-        act, subject, outline, note = '', '', '', ''
+        act, subject, outline = '', '', ''
         base = rid_rn(line)[1:-1]
 
         if ':' in base:

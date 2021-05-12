@@ -47,6 +47,7 @@ class Action(BaseCode):
             descs: list = None,
             note: str = None,
             ) -> Action:
+
         return Action(
                 assertion.is_instance(type, ActType) if type else self.type,
                 assertion.is_str(subject) if subject else self.subject,

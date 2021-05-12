@@ -14,14 +14,14 @@ __all__ = (
 
 
 # Main
-def combine_dicts(dict_a: dict, dict_b: dict)  -> dict:
+def combine_dicts(dict_a: dict, dict_b: dict) -> dict:
     assert isinstance(dict_a, dict)
     assert isinstance(dict_b, dict)
 
     return dict(dict_a, **dict_b)
 
 
-def dict_sorted(src: dict, is_reverse: bool=False) -> dict:
+def dict_sorted(src: dict, is_reverse: bool = False) -> dict:
     """Convert the dictionary data to sorted data."""
     assert isinstance(src, dict)
     assert isinstance(is_reverse, bool)
