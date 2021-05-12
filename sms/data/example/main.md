@@ -4,6 +4,10 @@
 
 ::title = サンプルストーリー
 
+[plot]
+
+テストプロット
+
 <boyandgirl>
 <confession>
 
