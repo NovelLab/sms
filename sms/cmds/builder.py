@@ -4,7 +4,6 @@
 import os
 import yaml
 from argparse import Namespace
-from enum import auto, Enum
 
 
 # My Modules
@@ -22,16 +21,13 @@ from sms.core.plotbuilder import build_plot
 from sms.core.rubiapplyer import apply_rubi_in_novel_data
 from sms.core.scriptbuilder import build_script
 from sms.core.structbuilder import build_struct
-from sms.db.assets import AssetsDB
-from sms.db.scenes import ScenesDB
 from sms.db.outputsdata import OutputsData
-from sms.db.srcs import SrcsDB
 from sms.syss import messages as msg
 from sms.syss.paths import DIR_PROJECT, DIR_BUILD_NAME, EXT_MARKDOWN
 from sms.syss.paths import FILE_CONFIG
 from sms.types.build import BuildType
 from sms.utils.fileio import read_file, write_file
-from sms.utils.filepath import add_extention, is_exists_path
+from sms.utils.filepath import add_extention
 from sms.utils.log import logger
 
 
@@ -166,7 +162,7 @@ def build_project(args: Namespace) -> bool:
             rubis = rubitags_from(assets)
             updated_rubi = apply_rubi_in_novel_data(outputs_rubi, rubis)
 
-            if not Outputter.output_data(_get_build_ipath('novel_rubi'),
+            if not Outputter.output_data(_get_build_path('novel_rubi'),
                     contents.cloned() + updated_rubi):
                 logger.error(
                         msg.ERR_FAIL_CANNOT_WRITE_DATA.format(data=f"output novel with rubi data: {PROC}"))

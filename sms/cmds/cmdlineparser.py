@@ -54,7 +54,6 @@ def get_commandline_arguments() -> Namespace:
     return args
 
 
-
 # Private Functions
 def _init_commandline_parser() -> ArgumentParser:
 

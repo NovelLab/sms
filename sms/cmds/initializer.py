@@ -114,8 +114,8 @@ class DirCreator(object):
 
         for dirname in DEF_DIRS:
             _dirname = os.path.join(DIR_PROJECT, dirname)
-            if not cls._safe_create_dir(dirname):
-                logger.warning(msg.ERR_FAIL_CANNOT_CREATE_DATA.format(data=f"{dirname}"))
+            if not cls._safe_create_dir(_dirname):
+                logger.warning(msg.ERR_FAIL_CANNOT_CREATE_DATA.format(data=f"{_dirname}"))
                 return False
 
         return True
