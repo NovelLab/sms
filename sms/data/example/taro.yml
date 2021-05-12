@@ -1,0 +1,12 @@
+#!SMSdata
+person:
+  tag: taro
+  name: 太郎
+  fullname: 山田,太郎
+  age: 17
+  sex: male
+  job: 高校生
+  belong: 県立高校
+  calling:
+    me: 俺
+  note: 備考

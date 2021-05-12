@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""SMS Application runner."""
+
+# Official Libraries
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append('sms')
+
+
+# My Modules
+from sms import __app_name__
+from sms import __version__
+from sms import USER_CACHE
+from sms.utils.log import logger, init_logger
+
+
+# Main
+def main(argv: list) -> int:
+    assert isinstance(argv, list)
+
+    if not init_logger(__app_name__, USER_CACHE):
+        return os.EX_SOFTWARE
+
+    if _has_debug_flag(argv):
+        if not _set_logger(_has_detail_debugging(argv)):
+            return os.EX_SOFTWARE
+
+    if _has_version_flag(argv):
+        _print_version()
+        return os.EX_OK
+
+    from sms.application import Application
+
+    app = Application()
+
+    return app.run()
+
+
+# Private Functions
+def _has_debug_flag(argv: list) -> bool:
+    assert isinstance(argv, list)
+
+    for arg in argv:
+        if arg in ('--debug',):
+            return True
+    return False
+
+
+def _has_detail_debugging(argv: list) -> bool:
+    assert isinstance(argv, list)
+
+    for arg in argv:
+        if arg in ('--debugdetail',):
+            return True
+    return False
+
+
+def _has_version_flag(argv: list) -> bool:
+    assert isinstance(argv, list)
+
+    for arg in argv:
+        if arg in ('-v', '--version'):
+            return True
+    return False
+
+
+def _print_version() -> bool:
+
+    print(f"{__app_name__}: v{__version__}")
+
+    return True
+
+
+def _set_logger(is_detail: bool) -> bool:
+    from sms.utils.log import set_for_debug
+
+    return set_for_debug(is_detail)
+
+
+if __name__  == '__main__':
+    sys.exit(main(sys.argv))

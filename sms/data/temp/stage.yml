@@ -1,0 +1,5 @@
+#!SMSdata
+stage:
+  tag: tagname
+  name: 舞台名
+  note: 備考

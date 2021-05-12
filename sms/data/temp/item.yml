@@ -1,0 +1,5 @@
+#!SMSdata
+item:
+  tag: tagname
+  name: 道具名
+  note: 備考

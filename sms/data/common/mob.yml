@@ -1,0 +1,35 @@
+#!SMSdata
+mob:
+  boy:
+    type: mob
+    name: 少年
+  girl:
+    type: mob
+    name: 少女
+  man:
+    type: mob
+    name: 男性
+  lady:
+    type: mob
+    name: 女性
+  oldman:
+    type: mob
+    name: 老人
+  oldlady:
+    type: mob
+    name: 老婆
+  baby:
+    type: mob
+    name: 赤ん坊
+  dog:
+    type: mob
+    name: 犬
+  cat:
+    type: mob
+    name: 猫
+  dad:
+    type: general
+    name: 父親
+  mam:
+    type: general
+    name: 母親

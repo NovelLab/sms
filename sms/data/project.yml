@@ -1,0 +1,5 @@
+#!SMSdata
+sms:
+  appname: {APPNAME}
+  copyright: "{COPYRIGHT}"
+  version: {VERSION}

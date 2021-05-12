@@ -1,0 +1,11 @@
+#!SMSdata
+word:
+  PC:
+    name: ＰＣ
+    info: パソコン
+  ID:
+    name: ＩＤ
+    info: ＩＤ
+  LINE:
+    name: ＬＩＮＥ
+    info: ライン。コミュニケーションアプリ

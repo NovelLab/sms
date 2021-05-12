@@ -1,0 +1,12 @@
+#!SMSdata
+person:
+  tag: hana
+  name: 花子
+  fullname: 木村,花子
+  age: 17
+  sex: female
+  job: 高校生
+  belong: 県立高校
+  calling:
+    me: 私
+  note: 備考
