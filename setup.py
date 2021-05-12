@@ -20,6 +20,7 @@ DATA_FILES = [
         'data/example/*.yml',
         'data/example/*.md',
         'data/temp/*.yml',
+        'data/temp/*.md',
         ]
 
 setup(
