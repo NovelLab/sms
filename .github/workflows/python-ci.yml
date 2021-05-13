@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
       - name: Install dependencies
-        run: pip install -e .[test]
+        run: pip install
 
       # Lint by flake8
       - name: Lint with flake8
