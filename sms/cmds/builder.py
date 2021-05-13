@@ -27,7 +27,7 @@ from sms.syss.paths import DIR_PROJECT, DIR_BUILD_NAME, EXT_MARKDOWN
 from sms.syss.paths import FILE_CONFIG
 from sms.types.build import BuildType
 from sms.utils.fileio import read_file, write_file
-from sms.utils.filepath import add_extention
+from sms.utils.filepath import add_extention, is_exists_path
 from sms.utils.log import logger
 
 
@@ -57,6 +57,10 @@ def build_project(args: Namespace) -> bool:
             BuildType.SCRIPT: None,
             BuildType.NOVEL: None,
             }
+
+    if not _check_and_create_build_dir():
+        logger.error(msg.ERR_FAIL_CANNOT_CREATE_DATA.format(data=f"build directory: {PROC}"))
+        return False
 
     srcs = get_srcs_db()
     if not srcs or srcs.is_empty():
@@ -256,6 +260,16 @@ class Outputter(object):
 
 
 # Private Functions
+def _check_and_create_build_dir() -> bool:
+    build_dir = os.path.join(DIR_PROJECT, DIR_BUILD_NAME)
+
+    if not is_exists_path(build_dir):
+        os.makedirs(build_dir)
+        logger.debug(msg.PROC_MESSAGE.format(proc=f"created build directory: {PROC}"))
+
+    return True
+
+
 def _get_build_path(fname: str) -> str:
     assert isinstance(fname, str)
 
