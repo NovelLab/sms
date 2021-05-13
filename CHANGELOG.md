@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- missing build dir
+
 ## [0.0.9] - 2021-05-12
 ### Added
 - Basic features
