@@ -32,7 +32,8 @@ setup(
         scripts=['bin/sms'],
         install_requires=[
             "PyYAML",
-        ],
+            "python-dateutil",
+            ],
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
         package_data={'sms': DATA_FILES},

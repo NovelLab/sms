@@ -5,5 +5,4 @@
 
 flake8
 pytest
-pyyaml
 python-dateutil
