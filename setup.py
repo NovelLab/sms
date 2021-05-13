@@ -33,8 +33,6 @@ setup(
         install_requires=[
             "PyYAML",
             "python-dateutil",
-            "flake8",
-            "pytest",
             ],
         description=SHORT_DESCRIPTION,
         long_description=LONG_DESCRITPYION,
