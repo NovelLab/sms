@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - missing build dir
+- unknown person's element warning
 
 ## [0.0.9] - 2021-05-12
 ### Added

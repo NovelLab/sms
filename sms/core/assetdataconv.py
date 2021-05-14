@@ -155,5 +155,4 @@ def _set_data_attr(obj: SObject, data: dict) -> bool:
             logger.warning(
                     msg.ERR_FAIL_CANNOT_WRITE_DATA_WITH_DATA.format(data=f"set '{key}'|'{val}': {PROC}"),
                     obj)
-            return False
     return True

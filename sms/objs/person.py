@@ -24,3 +24,6 @@ class Person(SObject):
         self.belong = None
         self.calling = None
         self.note = None
+        self.face = None
+        self.fashion = None
+        self.history = None
