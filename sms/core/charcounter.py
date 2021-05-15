@@ -146,15 +146,15 @@ class CharCounter(object):
 
         for record in data:
             assert isinstance(record, str)
-            if re.search(TITLE_PREFIX, record):
-                # scene head in outline
-                index = int(re.search(TITLE_PREFIX, record).group()[0:-2])
-                if cur_index > index:
-                    level += 1
+            if record.startswith('----'):
+                # change level
+                level += 1
+                if len(indices) <= level:
                     indices.append(0)
                     titles.append([''])
                     descs.append([''])
-                cur_index = index
+            elif re.search(TITLE_PREFIX, record):
+                # scene head in outline
                 indices[level] += 1
                 titles[level].append(rid_rn(record))
                 descs[level].append('')
@@ -164,20 +164,16 @@ class CharCounter(object):
             elif record.startswith('<!--'):
                 # comment
                 continue
-            elif record.startswith('----'):
-                # breakline
-                continue
             else:
                 # text
-                for lv in range(len(indices)):
-                    for index in range(1, indices[lv] + 1):
-                        descs[lv][index] += record
+                for level in range(len(indices)):
+                    descs[level][indices[level]] += record
 
-        for lv in range(len(indices)):
+        for level in range(len(indices)):
             tmp.extend(Converter.counts_from(
-                lv,
-                titles[lv],
-                descs[lv],
+                level,
+                titles[level],
+                descs[level],
                 columns, rows))
 
         logger.debug(msg.PROC_MESSAGE.format(proc=f"converted '{type}' char count data: {PROC}"))
