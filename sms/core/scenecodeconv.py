@@ -95,7 +95,8 @@ def scene_code_object_from(raw: RawSrc) -> SceneCode:
 # Process
 class Converter(object):
 
-    def to_action(line: str) -> Action:
+    @classmethod
+    def to_action(cls, line: str) -> Action:
         assert isinstance(line, str)
 
         act, subject, outline = '', '', ''
@@ -107,6 +108,10 @@ class Converter(object):
                 subject, act, outline = tokens[0], tokens[1], tokens[2]
             elif len(tokens) == 2:
                 subject, act = tokens[0], tokens[1]
+                if cls._is_special_act(subject):
+                    outline = act
+                    act = subject
+                    subject = ''
             else:
                 act = tokens[0]
         else:
@@ -136,6 +141,20 @@ class Converter(object):
             return Instruction(InstType.PARAGRAPH_START)
         else:
             return None
+
+    def _is_special_act(act: str) -> bool:
+        assert isinstance(act, str)
+
+        if act in ActType.FORESHADOW.to_checker():
+            return True
+        elif act in ActType.PAYOFF.to_checker():
+            return True
+        elif act in ActType.NOTE.to_checker():
+            return True
+        elif act in ActType.PLOT.to_checker():
+            return True
+        else:
+            return False
 
 
 class Restructor(object):

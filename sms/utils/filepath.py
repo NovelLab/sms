@@ -55,7 +55,7 @@ def get_filepaths_in(dirname: str, ext: str, is_recursive: bool = False) -> list
     assert isinstance(ext, str)
     assert isinstance(is_recursive, bool)
 
-    return glob.glob(f"{dirname}/*.{ext}", recursive=is_recursive)
+    return glob.glob(f"{dirname}/**/*.{ext}", recursive=is_recursive)
 
 
 def is_exists_path(path: str) -> bool:

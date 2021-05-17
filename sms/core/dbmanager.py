@@ -39,7 +39,7 @@ def get_assets_db() -> AssetsDB:
 
     db = AssetsDB()
 
-    paths = get_filepaths_in(PM.get_asset_dir_path(), EXT_YAML)
+    paths = get_filepaths_in(PM.get_asset_dir_path(), EXT_YAML, True)
 
     for path in paths:
 
@@ -67,7 +67,7 @@ def get_srcs_db() -> SrcsDB:
 
     db = SrcsDB()
 
-    paths = get_filepaths_in(PM.get_src_dir_path(), EXT_MARKDOWN)
+    paths = get_filepaths_in(PM.get_src_dir_path(), EXT_MARKDOWN, True)
 
     for path in paths:
 

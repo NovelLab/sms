@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - missing build dir
 - unknown person's element warning
 - invalid char count of plot
+- path getter as deepest
 
 ## [0.0.9] - 2021-05-12
 ### Added
