@@ -32,6 +32,7 @@ class PlotRecord(object):
     level: int
     index: int
     title: str
+    subtitle: str
     plot: list = field(default_factory=list)
 
 
@@ -128,7 +129,7 @@ class Converter(object):
         assert isinstance(record, Action)
 
         if ActType.PLOT is record.type:
-            return PlotRecord(level, 0, title, record.descs)
+            return PlotRecord(level, 0, title, record.outline, record.descs)
         else:
             return None
 
@@ -140,6 +141,7 @@ class Converter(object):
                 record.level,
                 index,
                 record.title,
+                record.subtitle,
                 record.plot)
 
 
@@ -170,6 +172,10 @@ class Formatter(object):
         assert isinstance(record, PlotRecord)
 
         plot = get_indent_text("\n".join(record.plot))
+        title = f"{record.index}. {record.title}\n"
 
-        return [f"{record.index}. {record.title}\n",
-                plot]
+        if record.subtitle:
+            subtitle = f"** {record.subtitle} **\n"
+            return [title, subtitle, plot]
+        else:
+            return [title, plot]

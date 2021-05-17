@@ -164,6 +164,9 @@ class CharCounter(object):
             elif record.startswith('<!--'):
                 # comment
                 continue
+            elif record.startswith('** '):
+                # sub title
+                continue
             else:
                 # text
                 for level in range(len(indices)):
