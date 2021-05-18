@@ -32,6 +32,9 @@ def call_scene(level: int, tag: str, scenes: ScenesDB) -> list:
     assert isinstance(scenes, ScenesDB)
 
     if not scenes.has(tag):
+        logger.warning(
+                msg.ERR_FAIL_MISSING_DATA_WITH_DATA.format(data=f"call tag: {PROC}"),
+                tag)
         return []
 
     tmp = []
