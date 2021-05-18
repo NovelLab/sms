@@ -66,6 +66,7 @@ def get_srcs_db() -> SrcsDB:
     logger.debug(msg.PROC_START.format(proc=_PROC))
 
     db = SrcsDB()
+    key_cache = []
 
     paths = get_filepaths_in(PM.get_src_dir_path(), EXT_MARKDOWN, True)
 
@@ -80,7 +81,13 @@ def get_srcs_db() -> SrcsDB:
         for raw in raws:
             if raw:
                 assert isinstance(raw, RawSrc)
+                if raw.tag in key_cache:
+                    logger.warning(
+                            msg.ERR_FAIL_DUPLICATED_DATA_WITH_DATA.format(data=f"tag name: {_PROC}"),
+                            raw.tag)
+                    continue
                 db.add(raw.tag, raw)
+                key_cache.append(raw.tag)
                 logger.debug(msg.PROC_MESSAGE.format(proc=f"Add '{raw.tag}' to srcs db"))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=_PROC))
