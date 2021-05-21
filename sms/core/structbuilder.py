@@ -173,7 +173,7 @@ class TagConverter(object):
             if RecordType.SPIN is record.type:
                 tmp.append(cls._conv_spin(record, tags))
             elif record.type in [RecordType.ACT]:
-                tmp.append(cls._conv_act(record, callings))
+                tmp.append(cls._conv_act(record, tags, callings))
             else:
                 tmp.append(record)
 
@@ -181,8 +181,9 @@ class TagConverter(object):
 
         return tmp
 
-    def _conv_act(record: StructRecord, callings: dict) -> StructRecord:
+    def _conv_act(record: StructRecord, tags: dict, callings: dict) -> StructRecord:
         assert isinstance(record, StructRecord)
+        assert isinstance(tags, dict)
         assert isinstance(callings, dict)
 
         if record.subject in callings:
@@ -190,6 +191,11 @@ class TagConverter(object):
             return StructRecord(record.type, record.act,
                     calling['S'],
                     translate_tags_str(record.outline, calling),
+                    record.note)
+        elif record.subject in tags:
+            return StructRecord(record.type, record.act,
+                    translate_tags_str(record.subject, tags, True, None),
+                    record.outline,
                     record.note)
         else:
             return record
