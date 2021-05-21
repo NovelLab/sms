@@ -1,6 +1,7 @@
 """Build struct module."""
 
 # Official Libraries
+import copy
 from dataclasses import dataclass
 from enum import auto, Enum
 from typing import Any
@@ -17,7 +18,7 @@ from sms.objs.instruction import Instruction
 from sms.objs.sceneend import SceneEnd
 from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
-from sms.types.action import ActType, NORMAL_ACTION
+from sms.types.action import ActType, NORMAL_ACTION, OBJECT_ACTS
 from sms.utils import assertion
 from sms.utils.log import logger
 from sms.utils.strtranslate import translate_tags_str, translate_tags_text_list
@@ -38,6 +39,10 @@ class RecordType(Enum):
     SCENE_END = auto()
     TITLE = auto()
     SPIN = auto()
+    OBJECT = auto()
+    OBJECT_PACK = auto()
+    PERSON = auto()
+    PERSON_PACK = auto()
 
 
 @dataclass
@@ -69,7 +74,7 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
 
     logger.debug(msg.PROC_START.format(proc=PROC))
 
-    structs = Converter.structs_data_from(story_data)
+    structs = Converter.structs_data_from(story_data, _get_person_tags(callings))
     if not structs:
         return None
 
@@ -77,7 +82,11 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
     if not updated_tags:
         return None
 
-    formatted = Formatter.format_data(updated_tags, is_comment)
+    reordered = Reorder.reorder_data_from(updated_tags)
+    if not reordered:
+        return None
+
+    formatted = Formatter.format_data(reordered, is_comment)
     if not formatted:
         return None
 
@@ -92,8 +101,9 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
 class Converter(object):
 
     @classmethod
-    def structs_data_from(cls, story_data: StoryData) -> list:
+    def structs_data_from(cls, story_data: StoryData, person_tags: list) -> list:
         assert isinstance(story_data, StoryData)
+        assert isinstance(person_tags, list)
 
         tmp = []
         indices = [0]
@@ -114,6 +124,11 @@ class Converter(object):
                 ret = cls._to_scene_act(record)
                 if ret:
                     tmp.append(ret)
+                    if RecordType.ACT is ret.type:
+                        if ret.subject in person_tags:
+                            pret = cls._to_scene_person(record)
+                            if pret:
+                                tmp.append(pret)
             elif isinstance(record, Instruction):
                 continue
             else:
@@ -129,6 +144,9 @@ class Converter(object):
         if record.type in NORMAL_ACTION:
             return StructRecord(RecordType.ACT, record.type,
                     record.subject, record.outline)
+        elif record.type in OBJECT_ACTS:
+            return StructRecord(RecordType.OBJECT, record.type,
+                    record.subject, record.outline)
         else:
             return None
 
@@ -138,6 +156,15 @@ class Converter(object):
 
         return StructRecord(RecordType.TITLE, ActType.TITLE,
                 record.title, str(index), record.level)
+
+    def _to_scene_person(record: Action) -> StructRecord:
+        assert isinstance(record, Action)
+
+        if record.subject:
+            return StructRecord(RecordType.PERSON, record.type,
+                    record.subject, '')
+        else:
+            return None
 
     def _to_scene_spin(record: SceneInfo) -> StructRecord:
         assert isinstance(record, SceneInfo)
@@ -172,7 +199,7 @@ class TagConverter(object):
             assert isinstance(record, StructRecord)
             if RecordType.SPIN is record.type:
                 tmp.append(cls._conv_spin(record, tags))
-            elif record.type in [RecordType.ACT]:
+            elif record.type in [RecordType.ACT, RecordType.OBJECT, RecordType.PERSON]:
                 tmp.append(cls._conv_act(record, tags, callings))
             else:
                 tmp.append(record)
@@ -217,6 +244,84 @@ class TagConverter(object):
                     ))
 
 
+class Reorder(object):
+
+    @classmethod
+    def reorder_data_from(cls, data: list) -> list:
+        assert isinstance(data, list)
+
+        tmp = []
+        cache = []
+        persons = []
+        objects = []
+
+        for record in data:
+            assert isinstance(record, StructRecord)
+            if RecordType.TITLE is record.type:
+                tmp.append(record)
+            elif RecordType.SPIN is record.type:
+                tmp.append(record)
+            elif RecordType.SCENE_END is record.type:
+                oret = cls._conv_object_pack(objects)
+                if oret:
+                    tmp.append(oret)
+                pret = cls._conv_person_pack(persons)
+                if pret:
+                    tmp.append(pret)
+                tmp.extend(copy.deepcopy(cache))
+                tmp.append(record)
+                objects = []
+                persons = []
+                cache = []
+            elif RecordType.OBJECT is record.type:
+                objects.append(record)
+            elif RecordType.PERSON is record.type:
+                persons.append(record)
+            else:
+                cache.append(record)
+
+        logger.debug(msg.PROC_MESSAGE.format(proc=f"reorder struct data: {PROC}"))
+
+        return tmp
+
+    def _conv_object_pack(objects: list) -> StructRecord:
+        assert isinstance(objects, list)
+
+        tmp = []
+
+        for record in objects:
+            assert isinstance(record, StructRecord)
+            if ActType.PUT is record.act:
+                tmp.append(record.subject)
+            else:
+                tmp.append(f"〜{record.subject}")
+
+        subjects = list(set(tmp))
+
+        if subjects:
+            return StructRecord(RecordType.OBJECT_PACK, ActType.NONE,
+                    "/".join(subjects), "")
+        else:
+            return None
+
+    def _conv_person_pack(persons: list) -> StructRecord:
+        assert isinstance(persons, list)
+
+        tmp = []
+
+        for record in persons:
+            assert isinstance(record, StructRecord)
+            tmp.append(record.subject)
+
+        subjects = list(set(tmp))
+
+        if subjects:
+            return StructRecord(RecordType.PERSON_PACK, ActType.NONE,
+                    "/".join(subjects), "")
+        else:
+            return None
+
+
 class Formatter(object):
 
     @classmethod
@@ -240,6 +345,16 @@ class Formatter(object):
                 tmp.append(get_br())
             elif RecordType.ACT is record.type:
                 ret = cls._to_act(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.OBJECT_PACK is record.type:
+                ret = cls._to_object(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.PERSON_PACK is record.type:
+                ret = cls._to_person(record)
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
@@ -289,6 +404,26 @@ class Formatter(object):
 
         return markdown_comment_style_of(record.subject)
 
+    def _to_object(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        subject = record.subject
+
+        if subject:
+            return f"[{subject}]"
+        else:
+            return None
+
+    def _to_person(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        subject = record.subject
+
+        if subject:
+            return f"（{subject}）"
+        else:
+            return None
+
     def _to_spin(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
 
@@ -309,3 +444,10 @@ class Formatter(object):
         head = '#' + '#' * int(record.note) if record.note != -1 else ''
         index = record.outline
         return f"{head} {index}. {record.subject}"
+
+
+# Private Functions
+def _get_person_tags(callings: dict) -> list:
+    assert isinstance(callings, dict)
+
+    return [k for k in callings.keys()]
