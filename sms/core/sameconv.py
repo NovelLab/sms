@@ -111,6 +111,7 @@ class Converter(object):
                 info.title,
                 cache.camera if cls._is_same(info.camera) else info.camera,
                 cache.stage if cls._is_same(info.stage) else info.stage,
+                info.location,
                 cache.year if cls._is_same(info.year) else info.year,
                 cache.date if cls._is_same(info.date) else info.date,
                 time,

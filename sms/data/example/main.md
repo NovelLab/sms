@@ -3,6 +3,7 @@
 ## main
 
 ::title = サンプルストーリー
+::flags = nospin
 
 [plot]
 
@@ -16,6 +17,7 @@
 ::title = 少年と少女
 ::camera = taro
 ::stage = Classroom
+::location = INT
 ::year = 2021
 ::date = 3/1
 ::time = afternoon

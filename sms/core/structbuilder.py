@@ -1,6 +1,7 @@
 """Build struct module."""
 
 # Official Libraries
+import copy
 from dataclasses import dataclass
 from enum import auto, Enum
 from typing import Any
@@ -17,7 +18,7 @@ from sms.objs.instruction import Instruction
 from sms.objs.sceneend import SceneEnd
 from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
-from sms.types.action import ActType, NORMAL_ACTION
+from sms.types.action import ActType, NORMAL_ACTS, OBJECT_ACTS
 from sms.utils import assertion
 from sms.utils.log import logger
 from sms.utils.strtranslate import translate_tags_str, translate_tags_text_list
@@ -38,12 +39,19 @@ class RecordType(Enum):
     SCENE_END = auto()
     TITLE = auto()
     SPIN = auto()
+    OBJECT = auto()
+    OBJECT_PACK = auto()
+    PERSON = auto()
+    PERSON_PACK = auto()
+    SKY = auto()
+    LIGHT = auto()
 
 
 @dataclass
 class SpinInfo(object):
     subject: str
     stage: str
+    location: str
     year: str
     date: str
     time: str
@@ -69,7 +77,7 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
 
     logger.debug(msg.PROC_START.format(proc=PROC))
 
-    structs = Converter.structs_data_from(story_data)
+    structs = Converter.structs_data_from(story_data, _get_person_tags(callings))
     if not structs:
         return None
 
@@ -77,7 +85,11 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
     if not updated_tags:
         return None
 
-    formatted = Formatter.format_data(updated_tags, is_comment)
+    reordered = Reorder.reorder_data_from(updated_tags)
+    if not reordered:
+        return None
+
+    formatted = Formatter.format_data(reordered, is_comment)
     if not formatted:
         return None
 
@@ -92,8 +104,9 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
 class Converter(object):
 
     @classmethod
-    def structs_data_from(cls, story_data: StoryData) -> list:
+    def structs_data_from(cls, story_data: StoryData, person_tags: list) -> list:
         assert isinstance(story_data, StoryData)
+        assert isinstance(person_tags, list)
 
         tmp = []
         indices = [0]
@@ -114,6 +127,11 @@ class Converter(object):
                 ret = cls._to_scene_act(record)
                 if ret:
                     tmp.append(ret)
+                    if RecordType.ACT is ret.type:
+                        if ret.subject in person_tags:
+                            pret = cls._to_scene_person(record)
+                            if pret:
+                                tmp.append(pret)
             elif isinstance(record, Instruction):
                 continue
             else:
@@ -126,8 +144,17 @@ class Converter(object):
     def _to_scene_act(record: Action) -> StructRecord:
         assert isinstance(record, Action)
 
-        if record.type in NORMAL_ACTION:
+        if record.type in NORMAL_ACTS:
             return StructRecord(RecordType.ACT, record.type,
+                    record.subject, record.outline)
+        elif record.type in OBJECT_ACTS:
+            return StructRecord(RecordType.OBJECT, record.type,
+                    record.subject, record.outline)
+        elif ActType.SKY is record.type:
+            return StructRecord(RecordType.SKY, record.type,
+                    record.subject, record.outline)
+        elif ActType.LIGHT is record.type:
+            return StructRecord(RecordType.LIGHT, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -139,6 +166,15 @@ class Converter(object):
         return StructRecord(RecordType.TITLE, ActType.TITLE,
                 record.title, str(index), record.level)
 
+    def _to_scene_person(record: Action) -> StructRecord:
+        assert isinstance(record, Action)
+
+        if record.subject:
+            return StructRecord(RecordType.PERSON, record.type,
+                    record.subject, '')
+        else:
+            return None
+
     def _to_scene_spin(record: SceneInfo) -> StructRecord:
         assert isinstance(record, SceneInfo)
 
@@ -148,6 +184,7 @@ class Converter(object):
                 SpinInfo(
                     record.camera,
                     record.stage,
+                    record.location,
                     record.year,
                     record.date,
                     record.time,
@@ -172,8 +209,8 @@ class TagConverter(object):
             assert isinstance(record, StructRecord)
             if RecordType.SPIN is record.type:
                 tmp.append(cls._conv_spin(record, tags))
-            elif record.type in [RecordType.ACT]:
-                tmp.append(cls._conv_act(record, callings))
+            elif record.type in [RecordType.ACT, RecordType.OBJECT, RecordType.PERSON]:
+                tmp.append(cls._conv_act(record, tags, callings))
             else:
                 tmp.append(record)
 
@@ -181,8 +218,9 @@ class TagConverter(object):
 
         return tmp
 
-    def _conv_act(record: StructRecord, callings: dict) -> StructRecord:
+    def _conv_act(record: StructRecord, tags: dict, callings: dict) -> StructRecord:
         assert isinstance(record, StructRecord)
+        assert isinstance(tags, dict)
         assert isinstance(callings, dict)
 
         if record.subject in callings:
@@ -190,6 +228,11 @@ class TagConverter(object):
             return StructRecord(record.type, record.act,
                     calling['S'],
                     translate_tags_str(record.outline, calling),
+                    record.note)
+        elif record.subject in tags:
+            return StructRecord(record.type, record.act,
+                    translate_tags_str(record.subject, tags, True, None),
+                    record.outline,
                     record.note)
         else:
             return record
@@ -204,11 +247,114 @@ class TagConverter(object):
                 SpinInfo(
                     translate_tags_str(info.subject, tags, True, None),
                     translate_tags_str(info.stage, tags, True, None),
+                    info.location,
                     translate_tags_str(info.year, tags, True, None),
                     translate_tags_str(info.date, tags, True, None),
                     translate_tags_str(info.time, tags, True, None),
                     info.clock,
                     ))
+
+
+class Reorder(object):
+
+    @classmethod
+    def reorder_data_from(cls, data: list) -> list:
+        assert isinstance(data, list)
+
+        tmp = []
+        cache = []
+        persons = []
+        objects = []
+        is_lighting = False
+        is_int = False
+        is_start_spin = False
+
+        for record in data:
+            assert isinstance(record, StructRecord)
+            if RecordType.TITLE is record.type:
+                tmp.append(record)
+            elif RecordType.SPIN is record.type:
+                tmp.append(record)
+                info = assertion.is_instance(record.note, SpinInfo)
+                is_int = info.location == 'INT'
+                is_start_spin = True
+            elif RecordType.SCENE_END is record.type:
+                if not is_start_spin:
+                    continue
+                oret = cls._conv_object_pack(objects)
+                if oret:
+                    tmp.append(oret)
+                pret = cls._conv_person_pack(persons)
+                if pret:
+                    tmp.append(pret)
+                if not is_lighting:
+                    tmp.append(cls._get_default_light(is_int))
+                tmp.extend(copy.deepcopy(cache))
+                tmp.append(record)
+                # reset
+                objects = []
+                persons = []
+                cache = []
+                is_lighting = False
+                is_int = False
+                is_start_spin = False
+            elif RecordType.OBJECT is record.type:
+                objects.append(record)
+            elif RecordType.PERSON is record.type:
+                persons.append(record)
+            elif RecordType.LIGHT is record.type:
+                is_lighting = True
+                cache.append(record)
+            else:
+                cache.append(record)
+
+        logger.debug(msg.PROC_MESSAGE.format(proc=f"reorder struct data: {PROC}"))
+
+        return tmp
+
+    def _conv_object_pack(objects: list) -> StructRecord:
+        assert isinstance(objects, list)
+
+        tmp = []
+
+        for record in objects:
+            assert isinstance(record, StructRecord)
+            if ActType.PUT is record.act:
+                tmp.append(record.subject)
+            else:
+                tmp.append(f"〜{record.subject}")
+
+        subjects = list(set(tmp))
+
+        if subjects:
+            return StructRecord(RecordType.OBJECT_PACK, ActType.NONE,
+                    "/".join(subjects), "")
+        else:
+            return None
+
+    def _conv_person_pack(persons: list) -> StructRecord:
+        assert isinstance(persons, list)
+
+        tmp = []
+
+        for record in persons:
+            assert isinstance(record, StructRecord)
+            tmp.append(record.subject)
+
+        subjects = list(set(tmp))
+
+        if subjects:
+            return StructRecord(RecordType.PERSON_PACK, ActType.NONE,
+                    "/".join(subjects), "")
+        else:
+            return None
+
+    def _get_default_light(is_int: bool) -> StructRecord:
+        assert isinstance(is_int, bool)
+
+        lux = '6' if is_int else '4'
+
+        return StructRecord(RecordType.LIGHT, ActType.NONE, '', lux)
 
 
 class Formatter(object):
@@ -234,6 +380,26 @@ class Formatter(object):
                 tmp.append(get_br())
             elif RecordType.ACT is record.type:
                 ret = cls._to_act(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.SKY is record.type:
+                ret = cls._to_sky(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.LIGHT is record.type:
+                ret = cls._to_light(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.OBJECT_PACK is record.type:
+                ret = cls._to_object(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.PERSON_PACK is record.type:
+                ret = cls._to_person(record)
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
@@ -283,6 +449,45 @@ class Formatter(object):
 
         return markdown_comment_style_of(record.subject)
 
+    def _to_light(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        outline = record.outline
+
+        if outline.isnumeric():
+            lux = int(outline)
+            dark = 10 - lux
+            _lux = '□' * lux
+            _dark = '■' * dark
+            return f"[{_lux}{_dark}]"
+        else:
+            return None
+
+    def _to_object(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        subject = record.subject
+
+        if subject:
+            return f"[{subject}]"
+        else:
+            return None
+
+    def _to_person(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        subject = record.subject
+
+        if subject:
+            return f">>{subject}"
+        else:
+            return None
+
+    def _to_sky(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        return f"//空：{record.outline}//"
+
     def _to_spin(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
 
@@ -290,12 +495,13 @@ class Formatter(object):
 
         camera = info.subject
         stage = info.stage
+        location = info.location
         year = info.year
         date = info.date
         time = info.time
         clock = info.clock
 
-        return f"○{stage}（{time}/{clock}） - {date}/{year} - [{camera}]"
+        return f"○{stage}/{location}（{time}/{clock}） - {date}/{year} - [{camera}]"
 
     def _to_title(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
@@ -303,3 +509,10 @@ class Formatter(object):
         head = '#' + '#' * int(record.note) if record.note != -1 else ''
         index = record.outline
         return f"{head} {index}. {record.subject}"
+
+
+# Private Functions
+def _get_person_tags(callings: dict) -> list:
+    assert isinstance(callings, dict)
+
+    return [k for k in callings.keys()]

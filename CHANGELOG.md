@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- scene transition info with title
 ### Fixed
 - missing build dir
 - unknown person's element warning

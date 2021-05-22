@@ -53,8 +53,10 @@ class InfoRecord(object):
 
 @dataclass
 class TransitionInfo(object):
+    title: str
     camera: str
     stage: str
+    location: str
     year: str
     date: str
     time: str
@@ -224,8 +226,10 @@ class TagConverter(object):
         return InfoRecord(record.type, record.level, record.index,
                 record.subject, record.outline,
                 TransitionInfo(
+                    translate_tags_str(info.title, tags, True, None),
                     translate_tags_str(info.camera, tags, True, None),
                     translate_tags_str(info.stage, tags, True, None),
+                    info.location,
                     translate_tags_str(info.year, tags, True, None),
                     translate_tags_str(info.date, tags, True, None),
                     translate_tags_str(info.time, tags, True, None),
@@ -250,6 +254,8 @@ class TransitionInfoConv(object):
                 if record.level >= len(indices):
                     indices.append(0)
                 indices[record.level] += 1
+                if 'nospin' in record.flags:
+                    continue
                 ret = cls._to_transition_info(indices[record.level], record)
                 if ret:
                     tmp.append(ret)
@@ -270,8 +276,10 @@ class TransitionInfoConv(object):
 
         return InfoRecord(RecordType.TRANSITION, record.level, index, '', '',
                 TransitionInfo(
+                    record.title,
                     record.camera,
                     record.stage,
+                    record.location,
                     record.year,
                     record.date,
                     record.time,
@@ -529,13 +537,14 @@ class Formatter(object):
 
         level = str(record.level)
         index = str(record.index)
+        title = info.title
         stage = info.stage
         time = info.time
         date = info.date
         year = info.year
         camera = info.camera
 
-        return cls._conv_transition(level, index, stage, time, date, year, camera)
+        return cls._conv_transition(level, index, title, stage, time, date, year, camera)
 
     @classmethod
     def _to_transision_breakline(cls) -> str:
@@ -586,10 +595,11 @@ class Formatter(object):
 
         return f"| {_level} | {_index} | {_subject} | {_inout} | {_wear} |"
 
-    def _conv_transition(level: str, index: str, stage: str,
+    def _conv_transition(level: str, index: str, title: str, stage: str,
             time: str, date: str, year: str, camera: str) -> str:
         assert isinstance(level, str)
         assert isinstance(index, str)
+        assert isinstance(title, str)
         assert isinstance(stage, str)
         assert isinstance(time, str)
         assert isinstance(date, str)
@@ -598,10 +608,11 @@ class Formatter(object):
 
         _level = just_string_of(level, 4)
         _index = just_string_of(index, 4)
+        _title = just_string_of(title, 16)
         _stage = just_string_of(stage, 16)
         _time = just_string_of(time, 6)
         _date = just_string_of(date, 6)
         _year = just_string_of(year, 6)
         _camera = just_string_of(camera, 16)
 
-        return f"| {_level} | {_index} | {_stage} | {_time} | {_date} | {_year} | {_camera} |"
+        return f"| {_level} | {_index} | {_title} | {_stage} | {_time} | {_date} | {_year} | {_camera} |"

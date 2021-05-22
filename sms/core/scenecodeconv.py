@@ -12,7 +12,7 @@ from sms.objs.instruction import Instruction
 from sms.objs.rawsrc import RawSrc
 from sms.objs.scenecode import SceneCode
 from sms.syss import messages as msg
-from sms.types.action import ActType
+from sms.types.action import ActType, FLAG_ACTS, NO_SUBJECT_ACTS
 from sms.types.instruction import InstType
 from sms.utils.log import logger
 from sms.utils.strings import rid_rn
@@ -145,14 +145,10 @@ class Converter(object):
     def _is_special_act(act: str) -> bool:
         assert isinstance(act, str)
 
-        if act in ActType.FORESHADOW.to_checker():
-            return True
-        elif act in ActType.PAYOFF.to_checker():
-            return True
-        elif act in ActType.NOTE.to_checker():
-            return True
-        elif act in ActType.PLOT.to_checker():
-            return True
+        for check in FLAG_ACTS + NO_SUBJECT_ACTS:
+            if act in check.to_checker():
+                return True
+
         else:
             return False
 

@@ -24,6 +24,7 @@ class SceneCode(object):
         self.title = None
         self.camera = None
         self.stage = None
+        self.location = None
         self.year = None
         self.date = None
         self.time = None
