@@ -6,6 +6,10 @@ from enum import auto, Enum
 
 __all__ = (
         'ActType',
+        'NORMAL_ACTS',
+        'OBJECT_ACTS',
+        'NO_SUBJECT_ACTS',
+        'FALG_ACTS',
         )
 
 
@@ -29,6 +33,7 @@ class ActType(Enum):
     DRAW = auto()
     EXPLAIN = auto()
     SKY = auto()
+    LIGHT = auto()
     # dialogue
     TALK = auto()
     THINK = auto()
@@ -57,6 +62,7 @@ class ActType(Enum):
                 ActType.FORESHADOW: ('foreshadow', 'FS'),
                 ActType.GO: ('go'),
                 ActType.HAVE: ('have'),
+                ActType.LIGHT: ('light',),
                 ActType.MARK: ('mark'),
                 ActType.NONE: ('none'),
                 ActType.NOTE: ('note'),
@@ -74,7 +80,7 @@ class ActType(Enum):
                 }[self]
 
 
-NORMAL_ACTION = [
+NORMAL_ACTS = [
         ActType.BE,
         ActType.COME,
         ActType.DO,
@@ -98,6 +104,13 @@ OBJECT_ACTS = [
 
 NO_SUBJECT_ACTS = [
         ActType.SKY,
+        ActType.LIGHT,
         ActType.NOTE,
         ActType.PLOT,
+        ]
+
+
+FLAG_ACTS = [
+        ActType.FORESHADOW,
+        ActType.PAYOFF,
         ]
