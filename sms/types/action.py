@@ -28,6 +28,7 @@ class ActType(Enum):
     # view
     DRAW = auto()
     EXPLAIN = auto()
+    SKY = auto()
     # dialogue
     TALK = auto()
     THINK = auto()
@@ -64,6 +65,7 @@ class ActType(Enum):
                 ActType.PUT: ('put'),
                 ActType.RID: ('rid'),
                 ActType.SAME: ('same', '-'),
+                ActType.SKY: ('sky'),
                 ActType.TALK: ('talk'),
                 ActType.THINK: ('think'),
                 ActType.TITLE: ('title'),
@@ -91,4 +93,11 @@ NORMAL_ACTION = [
 OBJECT_ACTS = [
         ActType.PUT,
         ActType.RID,
+        ]
+
+
+NO_SUBJECT_ACTS = [
+        ActType.SKY,
+        ActType.NOTE,
+        ActType.PLOT,
         ]

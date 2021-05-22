@@ -43,6 +43,7 @@ class RecordType(Enum):
     OBJECT_PACK = auto()
     PERSON = auto()
     PERSON_PACK = auto()
+    SKY = auto()
 
 
 @dataclass
@@ -147,6 +148,9 @@ class Converter(object):
                     record.subject, record.outline)
         elif record.type in OBJECT_ACTS:
             return StructRecord(RecordType.OBJECT, record.type,
+                    record.subject, record.outline)
+        elif ActType.SKY is record.type:
+            return StructRecord(RecordType.SKY, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -351,6 +355,11 @@ class Formatter(object):
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
+            elif RecordType.SKY is record.type:
+                ret = cls._to_sky(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
             elif RecordType.OBJECT_PACK is record.type:
                 ret = cls._to_object(record)
                 if ret:
@@ -426,6 +435,11 @@ class Formatter(object):
             return f"（{subject}）"
         else:
             return None
+
+    def _to_sky(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        return f"//空：{record.outline}//"
 
     def _to_spin(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)

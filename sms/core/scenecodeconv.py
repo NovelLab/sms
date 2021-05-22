@@ -153,6 +153,8 @@ class Converter(object):
             return True
         elif act in ActType.PLOT.to_checker():
             return True
+        elif act in ActType.SKY.to_checker():
+            return True
         else:
             return False
 
