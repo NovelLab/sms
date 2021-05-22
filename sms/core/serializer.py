@@ -83,6 +83,7 @@ class Converter(object):
                 scode.title,
                 scode.camera,
                 scode.stage,
+                scode.location,
                 scode.year,
                 scode.date,
                 scode.time,

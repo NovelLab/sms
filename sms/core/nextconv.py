@@ -82,6 +82,7 @@ class Converter(object):
                 info.title,
                 info.camera,
                 info.stage,
+                info.location,
                 str(year),
                 str(date),
                 str(time),

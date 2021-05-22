@@ -272,6 +272,7 @@ class TransitionInfoConv(object):
                 TransitionInfo(
                     record.camera,
                     record.stage,
+                    record.location,
                     record.year,
                     record.date,
                     record.time,

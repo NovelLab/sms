@@ -49,6 +49,7 @@ class RecordType(Enum):
 class SpinInfo(object):
     subject: str
     stage: str
+    location: str
     year: str
     date: str
     time: str
@@ -175,6 +176,7 @@ class Converter(object):
                 SpinInfo(
                     record.camera,
                     record.stage,
+                    record.location,
                     record.year,
                     record.date,
                     record.time,
@@ -237,6 +239,7 @@ class TagConverter(object):
                 SpinInfo(
                     translate_tags_str(info.subject, tags, True, None),
                     translate_tags_str(info.stage, tags, True, None),
+                    info.location,
                     translate_tags_str(info.year, tags, True, None),
                     translate_tags_str(info.date, tags, True, None),
                     translate_tags_str(info.time, tags, True, None),
@@ -431,12 +434,13 @@ class Formatter(object):
 
         camera = info.subject
         stage = info.stage
+        location = info.location
         year = info.year
         date = info.date
         time = info.time
         clock = info.clock
 
-        return f"○{stage}（{time}/{clock}） - {date}/{year} - [{camera}]"
+        return f"○{stage}/{location}（{time}/{clock}） - {date}/{year} - [{camera}]"
 
     def _to_title(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
