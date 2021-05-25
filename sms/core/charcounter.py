@@ -73,7 +73,7 @@ class CharCounter(object):
 
         if type in [BuildType.OUTLINE, BuildType.PLOT]:
             return cls._counts_outline_from(type, data, columns, rows)
-        elif type in [BuildType.SCRIPT, BuildType.NOVEL]:
+        elif type in [BuildType.SCRIPT, BuildType.NOVEL, BuildType.STRUCT]:
             return cls._counts_data_from(type, data, columns, rows)
         else:
             return []
@@ -112,11 +112,16 @@ class CharCounter(object):
             elif record.startswith('----'):
                 # breakline
                 continue
+            elif BuildType.STRUCT is type and record.startswith('['):
+                # spin info
+                continue
+            elif BuildType.STRUCT is type and record.startswith('>>'):
+                # person info
+                continue
             else:
                 # text
                 for level in range(len(indices)):
-                    for index in range(1, indices[level] + 1):
-                        descs[level][index] += record
+                    descs[level][indices[level]] += record
 
         for level in range(len(indices)):
             tmp.extend(Converter.counts_from(
@@ -273,5 +278,7 @@ class Formatter(object):
             return "## SCRIPT Char counts"
         elif BuildType.NOVEL is type:
             return "## NOVEL Char Counts"
+        elif BuildType.STRUCT is type:
+            return "## STRUCT Char Counts"
         else:
             return "## Char Counts"

@@ -45,6 +45,7 @@ class RecordType(Enum):
     PERSON_PACK = auto()
     SKY = auto()
     LIGHT = auto()
+    SYMBOL = auto()
 
 
 DIALOGUE_ACTS = [
@@ -204,6 +205,9 @@ class Converter(object):
                     record.subject, record.outline)
         elif ActType.LIGHT is record.type:
             return StructRecord(RecordType.LIGHT, record.type,
+                    record.subject, record.outline)
+        elif ActType.MARK is record.type:
+            return StructRecord(RecordType.SYMBOL, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -432,6 +436,12 @@ class Formatter(object):
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
+            elif RecordType.SYMBOL is record.type:
+                ret = cls._to_symbol(record)
+                if ret:
+                    tmp.append(get_br())
+                    tmp.append(ret)
+                    tmp.append(get_br(2))
             elif RecordType.SKY is record.type:
                 ret = cls._to_sky(record)
                 if ret:
@@ -555,6 +565,11 @@ class Formatter(object):
         clock = info.clock
 
         return f"○{stage}/{location}（{time}/{clock}） - {date}/{year} - [{camera}]"
+
+    def _to_symbol(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        return f"{record.outline}"
 
     def _to_title(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
