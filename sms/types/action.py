@@ -38,6 +38,10 @@ class ActType(Enum):
     TALK = auto()
     THINK = auto()
     VOICE = auto()
+    # info
+    KNOW = auto()
+    PROMISE = auto()
+    REMEMBER = auto()
     # data
     PLOT = auto()
     FORESHADOW = auto()
@@ -62,13 +66,16 @@ class ActType(Enum):
                 ActType.FORESHADOW: ('foreshadow', 'FS'),
                 ActType.GO: ('go'),
                 ActType.HAVE: ('have'),
+                ActType.KNOW: ('know'),
                 ActType.LIGHT: ('light',),
                 ActType.MARK: ('mark'),
                 ActType.NONE: ('none'),
                 ActType.NOTE: ('note'),
                 ActType.PAYOFF: ('payoff', 'PO'),
                 ActType.PLOT: ('plot'),
+                ActType.PROMISE: ('promise', 'prom'),
                 ActType.PUT: ('put'),
+                ActType.REMEMBER: ('remember', 'rem'),
                 ActType.RID: ('rid'),
                 ActType.SAME: ('same', '-'),
                 ActType.SKY: ('sky'),
@@ -89,6 +96,10 @@ NORMAL_ACTS = [
         ActType.FACE,
         ActType.FEEL,
         ActType.GO,
+        ActType.HAVE,
+        ActType.KNOW,
+        ActType.PROMISE,
+        ActType.REMEMBER,
         ActType.TALK,
         ActType.THINK,
         ActType.VOICE,
@@ -107,6 +118,7 @@ NO_SUBJECT_ACTS = [
         ActType.LIGHT,
         ActType.NOTE,
         ActType.PLOT,
+        ActType.MARK,
         ]
 
 
