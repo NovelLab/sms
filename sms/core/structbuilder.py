@@ -76,10 +76,17 @@ FLAG_ACTS = [
         ActType.PAYOFF,
         ]
 
+SELECT_ACTS = [
+        ActType.CHOICE,
+        ActType.SELECTION,
+        ]
+
 STATE_ACTS = [
         ActType.KNOW,
         ActType.PROMISE,
         ActType.REMEMBER,
+        ActType.STATE,
+        ActType.WHY,
         ]
 
 THINKING_ACTS = [
@@ -476,6 +483,14 @@ class Formatter(object):
             return f"{indent}％（{category}）[{subject}]＝{outline}"
         elif act in THINKING_ACTS:
             return f"{indent}（{category}）[{subject}]{outline}"
+        elif act in SELECT_ACTS:
+            if ActType.CHOICE is act:
+                return f"{indent}！（{category}）[{subject}]＝{outline}"
+            else:
+                assert ActType.SELECTION is act
+                selects = outline.replace(' ','').split(',')
+                _selects = '/'.join(selects)
+                return f'{indent}？（{category}）[{subject}]＝{_selects}'
         else:
             logger.warning(
                     msg.ERR_FAIL_INVALID_DATA_WITH_DATA.format(data=f"act type in format: {PROC}"),

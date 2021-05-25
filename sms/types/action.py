@@ -44,6 +44,9 @@ class ActType(Enum):
     PROMISE = auto()
     REMEMBER = auto()
     STATE = auto()
+    WHY = auto()
+    SELECTION = auto()
+    CHOICE = auto()
     # data
     PLOT = auto()
     FORESHADOW = auto()
@@ -59,6 +62,7 @@ class ActType(Enum):
         return {
                 ActType.BE: ('be'),
                 ActType.BR: ('br'),
+                ActType.CHOICE: ('choice',),
                 ActType.COME: ('come'),
                 ActType.DISCARD: ('discard', 'dis'),
                 ActType.DO: ('do'),
@@ -81,6 +85,7 @@ class ActType(Enum):
                 ActType.REMEMBER: ('remember', 'rem'),
                 ActType.RID: ('rid'),
                 ActType.SAME: ('same', '-'),
+                ActType.SELECTION: ('selection', 'sel'),
                 ActType.SKY: ('sky'),
                 ActType.STATE: ('state',),
                 ActType.TALK: ('talk'),
@@ -88,12 +93,14 @@ class ActType(Enum):
                 ActType.TITLE: ('title'),
                 ActType.VOICE: ('voice'),
                 ActType.WEAR: ('wear'),
+                ActType.WHY: ('why'),
                 }[self]
 
     def to_category(self) -> str:
         return {
                 ActType.BE: 'いる',
                 ActType.BR: '改行',
+                ActType.CHOICE: '選ぶ',
                 ActType.COME: '来る',
                 ActType.DISCARD: '廃棄',
                 ActType.DO: '行動',
@@ -116,6 +123,7 @@ class ActType(Enum):
                 ActType.REMEMBER: '想起',
                 ActType.RID: '削除',
                 ActType.SAME: '同じ',
+                ActType.SELECTION: '選択肢',
                 ActType.SKY: '空',
                 ActType.STATE: '状態',
                 ActType.TALK: '会話',
@@ -123,11 +131,13 @@ class ActType(Enum):
                 ActType.TITLE: 'ＴＴ',
                 ActType.VOICE: '音声',
                 ActType.WEAR: '衣装',
+                ActType.WHY:'疑問',
                 }[self]
 
 
 NORMAL_ACTS = [
         ActType.BE,
+        ActType.CHOICE,
         ActType.COME,
         ActType.DISCARD,
         ActType.DO,
@@ -140,10 +150,12 @@ NORMAL_ACTS = [
         ActType.KNOW,
         ActType.PROMISE,
         ActType.REMEMBER,
+        ActType.SELECTION,
         ActType.TALK,
         ActType.THINK,
         ActType.VOICE,
         ActType.WEAR,
+        ActType.WHY,
         ]
 
 
@@ -165,4 +177,15 @@ NO_SUBJECT_ACTS = [
 FLAG_ACTS = [
         ActType.FORESHADOW,
         ActType.PAYOFF,
+        ]
+
+
+SYMBOL_ACTS = [
+        ActType.BR,
+        ActType.MARK,
+        ActType.NONE,
+        ActType.NOTE,
+        ActType.PLOT,
+        ActType.SAME,
+        ActType.TITLE,
         ]
