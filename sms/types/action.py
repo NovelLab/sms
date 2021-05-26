@@ -9,7 +9,7 @@ __all__ = (
         'NORMAL_ACTS',
         'OBJECT_ACTS',
         'NO_SUBJECT_ACTS',
-        'FALG_ACTS',
+        'FLAG_ACTS',
         )
 
 
