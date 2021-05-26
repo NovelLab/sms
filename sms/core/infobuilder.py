@@ -181,6 +181,8 @@ class TagConverter(object):
                         translate_tags_str(info.foreshadow, calling),
                         translate_tags_str(info.payoff, calling),
                         ))
+        else:
+            return record
 
     def _conv_item(record: InfoRecord, callings: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)

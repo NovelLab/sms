@@ -46,6 +46,7 @@ class RecordType(Enum):
     SKY = auto()
     LIGHT = auto()
     SYMBOL = auto()
+    FLAG = auto()
 
 
 DIALOGUE_ACTS = [
@@ -208,6 +209,9 @@ class Converter(object):
                     record.subject, record.outline)
         elif ActType.MARK is record.type:
             return StructRecord(RecordType.SYMBOL, record.type,
+                    record.subject, record.outline)
+        elif record.type in FLAG_ACTS:
+            return StructRecord(RecordType.FLAG, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -436,6 +440,11 @@ class Formatter(object):
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
+            elif RecordType.FLAG is record.type:
+                ret = cls._to_flag(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
             elif RecordType.SYMBOL is record.type:
                 ret = cls._to_symbol(record)
                 if ret:
@@ -481,7 +490,7 @@ class Formatter(object):
         if act in DIALOGUE_ACTS:
             _outline = f"「{outline}」"
             if ActType.VOICE is act:
-                _outline = f"『{outline}』"
+                _outline = f"（{category}）『{outline}』"
             return f"{subject}{_outline}"
         elif act in DOING_ACTS:
             return f"{indent}[{subject}]（{category}）{outline}"
@@ -511,6 +520,20 @@ class Formatter(object):
         assert isinstance(record, StructRecord)
 
         return markdown_comment_style_of(record.subject)
+
+    def _to_flag(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        act = assertion.is_instance(record.act, ActType)
+        category = record.act.to_category()
+        subject = record.subject
+        outline = record.outline
+        indent = get_indent(2)
+
+        if ActType.FORESHADOW is act:
+            return f"<{subject}>＝{outline}"
+        else:
+            return f"<{subject}>〜{outline}"
 
     def _to_light(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
