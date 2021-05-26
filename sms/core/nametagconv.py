@@ -37,6 +37,8 @@ ELM_NAME = 'name'
 
 ELM_TYPE = 'type'
 
+ELM_CLOCK = 'clock'
+
 
 # Main
 def callingtags_from(assets: AssetsDB) -> dict:
@@ -135,6 +137,26 @@ def rubitags_from(assets: AssetsDB) -> dict:
             continue
 
     logger.debug(msg.PROC_MESSAGE.format(proc=f"conv rubi tags: {PROC}"))
+
+    return tmp
+
+
+def timeclocks_from(assets: AssetsDB) -> dict:
+    assert isinstance(assets, AssetsDB)
+
+    tmp = {}
+
+    for key, val in assets.data.items():
+        assert isinstance(key, str)
+        assert isinstance(val, SObject)
+        if isinstance(val, NameTag) and NameTagType.TIME is val.type:
+            for tag, timeval in val.data.items():
+                clock = timeval[ELM_CLOCK]
+                tmp[tag] = clock
+        else:
+            continue
+
+    logger.debug(msg.PROC_MESSAGE.format(proc=f"conv time clock tags: {PROC}"))
 
     return tmp
 

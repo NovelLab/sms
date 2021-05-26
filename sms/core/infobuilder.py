@@ -542,16 +542,17 @@ class Formatter(object):
         title = info.title
         stage = info.stage
         time = info.time
+        clock = info.clock
         date = info.date
         year = info.year
         camera = info.camera
 
-        return cls._conv_transition(level, index, title, stage, time, date, year, camera)
+        return cls._conv_transition(level, index, title, stage, time, clock, date, year, camera)
 
     @classmethod
     def _to_transision_breakline(cls) -> str:
-        level = index = stage = time = date = year = camera = '----'
-        return cls._conv_transition(level, index, stage, time, date, year, camera)
+        level = index = stage = time = clock = date = year = camera = '----'
+        return cls._conv_transition(level, index, stage, time, clock, date, year, camera)
 
     def _conv_flag(level: str, index: str, subject: str,
             foreshadow: str, payoff: str) -> str:
@@ -598,12 +599,13 @@ class Formatter(object):
         return f"| {_level} | {_index} | {_subject} | {_inout} | {_wear} |"
 
     def _conv_transition(level: str, index: str, title: str, stage: str,
-            time: str, date: str, year: str, camera: str) -> str:
+            time: str, clock: str, date: str, year: str, camera: str) -> str:
         assert isinstance(level, str)
         assert isinstance(index, str)
         assert isinstance(title, str)
         assert isinstance(stage, str)
         assert isinstance(time, str)
+        assert isinstance(clock, str)
         assert isinstance(date, str)
         assert isinstance(year, str)
         assert isinstance(camera, str)
@@ -616,5 +618,6 @@ class Formatter(object):
         _date = just_string_of(date, 6)
         _year = just_string_of(year, 6)
         _camera = just_string_of(camera, 16)
+        _clock = just_string_of(clock, 6)
 
-        return f"| {_level} | {_index} | {_title} | {_stage} | {_time} | {_date} | {_year} | {_camera} |"
+        return f"| {_level} | {_index} | {_title} | {_stage} | {_time} | {_clock} | {_date} | {_year} | {_camera} |"

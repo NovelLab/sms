@@ -7,9 +7,11 @@ import yaml
 from sms.core.aliasconv import apply_alias
 from sms.core.instrunner import apply_instructions
 from sms.core.nametagconv import nametags_from
+from sms.core.nametagconv import timeclocks_from
 from sms.core.nextconv import apply_scene_info_next
 from sms.core.sameconv import apply_scene_action_same, apply_scene_info_same
 from sms.core.serializer import call_scene
+from sms.core.timeclockconv import apply_scene_time_to_clock
 from sms.db.assets import AssetsDB
 from sms.db.scenes import ScenesDB
 from sms.db.storydata import StoryData
@@ -64,12 +66,23 @@ def compile_codes(scenes: ScenesDB, assets: AssetsDB) -> StoryData:
     tags_sorted = dict_sorted(tags)
     # NOTE: current tags unused
 
+    timeclocks = timeclocks_from(assets)
+    if not timeclocks:
+        logger.error(
+                msg.ERR_FAIL_MISSING_DATA.format(data=f"time clocks tags: {PROC}"))
+        return None
+
     updated_alias = apply_alias(data)
     if not updated_alias:
         logger.error(msg.ERR_FAIL_MISSING_DATA.format(data=f"apply alias data: {PROC}"))
         return None
 
-    updated_same_info = apply_scene_info_same(updated_alias)
+    updated_timeclock = apply_scene_time_to_clock(updated_alias, timeclocks)
+    if not updated_timeclock:
+        logger.error(msg.ERR_FAIL_MISSING_DATA.format(data=f"apply time clock data: {PROC}"))
+        return None
+
+    updated_same_info = apply_scene_info_same(updated_timeclock)
     if not updated_same_info:
         logger.error(msg.ERR_FAIL_MISSING_DATA.format(data=f"apply same info data: {PROC}"))
         return None
