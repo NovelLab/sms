@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - scene transition info with title
 - why, promise and more new acts
+- elapse time
 ### Fixed
 - missing build dir
 - unknown person's element warning
