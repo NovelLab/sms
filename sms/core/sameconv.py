@@ -59,8 +59,12 @@ def apply_scene_info_same(data: list) -> list:
         assert isinstance(record, BaseCode)
         if isinstance(record, SceneInfo):
             ret = Converter.conv_same_info(record, cache)
-            tmp.append(ret)
-            cache = ret
+            if ret:
+                tmp.append(ret)
+                cache = ret
+            else:
+                # nospin
+                tmp.append(record)
         else:
             tmp.append(record)
 
@@ -93,12 +97,15 @@ class Converter(object):
     def conv_same_info(cls, info: SceneInfo, cache: SceneInfo) -> SceneInfo:
         assert isinstance(info, SceneInfo)
 
+        if 'nospin' in info.flags:
+            return None
+
+        time = info.time
         if cache:
             assert isinstance(cache, SceneInfo)
         else:
             return info
 
-        time = info.time
         clock = info.clock
 
         if cls._is_same(info.time):
@@ -112,8 +119,8 @@ class Converter(object):
                 cache.camera if cls._is_same(info.camera) else info.camera,
                 cache.stage if cls._is_same(info.stage) else info.stage,
                 info.location,
-                cache.year if cls._is_same(info.year) else info.year,
-                cache.date if cls._is_same(info.date) else info.date,
+                cls._is_datetime_same(info.year),
+                cls._is_datetime_same(info.date),
                 time,
                 clock,
                 info.outline,
@@ -127,3 +134,11 @@ class Converter(object):
             return '-' == text
         else:
             return True
+
+    @classmethod
+    def _is_datetime_same(cls, text: str) -> str:
+        assert isinstance(text, str)
+        if cls._is_same(text):
+            return 'same'
+        else:
+            return text
