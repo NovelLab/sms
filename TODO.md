@@ -8,6 +8,7 @@ TODO note
 - print convert tag list
 - stage count in struct or scene info
 - auto sky state when ext
+- action mode
 
 ## Bug fix
 

@@ -9,7 +9,7 @@ __all__ = (
         'NORMAL_ACTS',
         'OBJECT_ACTS',
         'NO_SUBJECT_ACTS',
-        'FALG_ACTS',
+        'FLAG_ACTS',
         )
 
 
@@ -47,6 +47,8 @@ class ActType(Enum):
     WHY = auto()
     SELECTION = auto()
     CHOICE = auto()
+    # time
+    ELAPSE = auto()
     # data
     PLOT = auto()
     FORESHADOW = auto()
@@ -67,6 +69,7 @@ class ActType(Enum):
                 ActType.DISCARD: ('discard', 'dis'),
                 ActType.DO: ('do'),
                 ActType.DRAW: ('draw'),
+                ActType.ELAPSE: ('elapse'),
                 ActType.EXPLAIN: ('explain'),
                 ActType.FACE: ('face'),
                 ActType.FEEL: ('feel'),
@@ -105,6 +108,7 @@ class ActType(Enum):
                 ActType.DISCARD: '廃棄',
                 ActType.DO: '行動',
                 ActType.DRAW: '描画',
+                ActType.ELAPSE: '時間経過',
                 ActType.EXPLAIN: '説明',
                 ActType.FACE: '表情',
                 ActType.FEEL: '感情',
@@ -169,6 +173,7 @@ OBJECT_ACTS = [
 NO_SUBJECT_ACTS = [
         ActType.SKY,
         ActType.LIGHT,
+        ActType.ELAPSE,
         ActType.NOTE,
         ActType.PLOT,
         ActType.MARK,
