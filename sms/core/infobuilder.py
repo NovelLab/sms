@@ -154,11 +154,11 @@ class TagConverter(object):
             if RecordType.TRANSITION is record.type:
                 tmp.append(cls._conv_transition(record, tags))
             elif RecordType.PERSON_INFO is record.type:
-                tmp.append(cls._conv_person(record, callings))
+                tmp.append(cls._conv_person(record, callings, tags))
             elif RecordType.ITEM_INFO is record.type:
-                tmp.append(cls._conv_item(record, callings))
+                tmp.append(cls._conv_item(record, callings, tags))
             elif RecordType.FLAG_INFO is record.type:
-                tmp.append(cls._conv_flag(record, callings))
+                tmp.append(cls._conv_flag(record, callings, tags))
             else:
                 tmp.append(record)
 
@@ -166,56 +166,75 @@ class TagConverter(object):
 
         return tmp
 
-    def _conv_flag(record: InfoRecord, callings: dict) -> InfoRecord:
+    def _conv_flag(record: InfoRecord, callings: dict, tags: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)
         assert isinstance(callings, dict)
+        assert isinstance(tags, dict)
 
         info = assertion.is_instance(record.note, FlagInfo)
+        subject = record.subject
+        outline = record.outline
+        foreshadow = info.foreshadow
+        payoff = info.payoff
 
-        if record.subject in callings:
+        if subject in callings:
             calling = callings[record.subject]
-            return InfoRecord(record.type, record.level, record.index,
-                    calling['S'],
-                    translate_tags_str(record.outline, calling),
-                    FlagInfo(
-                        translate_tags_str(info.foreshadow, calling),
-                        translate_tags_str(info.payoff, calling),
-                        ))
+            subject = calling['S']
+            outline = translate_tags_str(outline, calling)
+            foreshadow = translate_tags_str(foreshadow, calling)
+            payoff = translate_tags_str(payoff, calling)
+        return InfoRecord(record.type, record.level, record.index,
+                translate_tags_str(subject, tags),
+                translate_tags_str(outline, tags),
+                FlagInfo(
+                    translate_tags_str(foreshadow, tags),
+                    translate_tags_str(payoff, tags)
+                ))
 
-    def _conv_item(record: InfoRecord, callings: dict) -> InfoRecord:
+    def _conv_item(record: InfoRecord, callings: dict, tags: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)
         assert isinstance(callings, dict)
+        assert isinstance(tags, dict)
 
         info = assertion.is_instance(record.note, ItemInfo)
+        subject = record.subject
+        outline = record.outline
+        have = info.have
 
         if record.subject in callings:
             calling = callings[record.subject]
-            return InfoRecord(record.type, record.level, record.index,
-                    calling['S'],
-                    translate_tags_str(record.outline, calling),
-                    ItemInfo(
-                        translate_tags_str(info.have, calling),
-                        ))
-        else:
-            return record
+            outline = translate_tags_str(outline, calling)
+            have = translate_tags_str(have, calling)
+        return InfoRecord(record.type, record.level, record.index,
+                translate_tags_str(subject, tags),
+                translate_tags_str(outline, tags),
+                ItemInfo(
+                    translate_tags_str(have, tags),
+                    ))
 
-    def _conv_person(record: InfoRecord, callings: dict) -> InfoRecord:
+    def _conv_person(record: InfoRecord, callings: dict, tags: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)
         assert isinstance(callings, dict)
+        assert isinstance(tags, dict)
 
         info = assertion.is_instance(record.note, PersonInfo)
+        subject = record.subject
+        outline = record.outline
+        inout = info.inout
+        wear = info.wear
 
         if record.subject in callings:
             calling = callings[record.subject]
-            return InfoRecord(record.type, record.level, record.index,
-                    calling['S'],
-                    translate_tags_str(record.outline, calling),
-                    PersonInfo(
-                        translate_tags_str(info.inout, calling),
-                        translate_tags_str(info.wear, calling),
-                        ))
-        else:
-            return record
+            outline = translate_tags_str(outline, calling)
+            inout = translate_tags_str(inout, calling)
+            wear = translate_tags_str(wear, calling)
+        return InfoRecord(record.type, record.level, record.index,
+                translate_tags_str(subject, tags),
+                translate_tags_str(outline, tags),
+                PersonInfo(
+                    translate_tags_str(inout, tags),
+                    translate_tags_str(wear, tags),
+                    ))
 
     def _conv_transition(record: InfoRecord, tags: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)
@@ -226,12 +245,12 @@ class TagConverter(object):
         return InfoRecord(record.type, record.level, record.index,
                 record.subject, record.outline,
                 TransitionInfo(
-                    translate_tags_str(info.title, tags, True, None),
+                    translate_tags_str(info.title, tags),
                     translate_tags_str(info.camera, tags, True, None),
                     translate_tags_str(info.stage, tags, True, None),
                     info.location,
-                    translate_tags_str(info.year, tags, True, None),
-                    translate_tags_str(info.date, tags, True, None),
+                    translate_tags_str(info.year, tags),
+                    translate_tags_str(info.date, tags),
                     translate_tags_str(info.time, tags, True, None),
                     info.clock,
                     ))
@@ -540,16 +559,17 @@ class Formatter(object):
         title = info.title
         stage = info.stage
         time = info.time
+        clock = info.clock
         date = info.date
         year = info.year
         camera = info.camera
 
-        return cls._conv_transition(level, index, title, stage, time, date, year, camera)
+        return cls._conv_transition(level, index, title, stage, time, clock, date, year, camera)
 
     @classmethod
     def _to_transision_breakline(cls) -> str:
-        level = index = stage = time = date = year = camera = '----'
-        return cls._conv_transition(level, index, stage, time, date, year, camera)
+        level = index = stage = time = clock = date = year = camera = '----'
+        return cls._conv_transition(level, index, stage, time, clock, date, year, camera)
 
     def _conv_flag(level: str, index: str, subject: str,
             foreshadow: str, payoff: str) -> str:
@@ -596,12 +616,13 @@ class Formatter(object):
         return f"| {_level} | {_index} | {_subject} | {_inout} | {_wear} |"
 
     def _conv_transition(level: str, index: str, title: str, stage: str,
-            time: str, date: str, year: str, camera: str) -> str:
+            time: str, clock: str, date: str, year: str, camera: str) -> str:
         assert isinstance(level, str)
         assert isinstance(index, str)
         assert isinstance(title, str)
         assert isinstance(stage, str)
         assert isinstance(time, str)
+        assert isinstance(clock, str)
         assert isinstance(date, str)
         assert isinstance(year, str)
         assert isinstance(camera, str)
@@ -614,5 +635,6 @@ class Formatter(object):
         _date = just_string_of(date, 6)
         _year = just_string_of(year, 6)
         _camera = just_string_of(camera, 16)
+        _clock = just_string_of(clock, 6)
 
-        return f"| {_level} | {_index} | {_title} | {_stage} | {_time} | {_date} | {_year} | {_camera} |"
+        return f"| {_level} | {_index} | {_title} | {_stage} | {_time} | {_clock} | {_date} | {_year} | {_camera} |"

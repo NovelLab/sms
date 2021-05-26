@@ -87,7 +87,7 @@ class Converter(object):
                 scode.year,
                 scode.date,
                 scode.time,
-                scode.time if scode.time and ':' in scode.time else '0:00',
+                scode.time if scode.time and ':' in scode.time else '-',
                 scode.outline,
                 scode.flags,
                 scode.note,

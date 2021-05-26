@@ -45,6 +45,57 @@ class RecordType(Enum):
     PERSON_PACK = auto()
     SKY = auto()
     LIGHT = auto()
+    SYMBOL = auto()
+    FLAG = auto()
+
+
+DIALOGUE_ACTS = [
+        ActType.TALK,
+        ActType.VOICE,
+        ]
+
+DOING_ACTS = [
+        ActType.BE,
+        ActType.COME,
+        ActType.DO,
+        ActType.GO,
+        ]
+
+DRAW_ACTS = [
+        ActType.DISCARD,
+        ActType.DRAW,
+        ActType.FACE,
+        ActType.HAVE,
+        ActType.LIGHT,
+        ActType.PUT,
+        ActType.RID,
+        ActType.SKY,
+        ActType.WEAR,
+        ]
+
+FLAG_ACTS = [
+        ActType.FORESHADOW,
+        ActType.PAYOFF,
+        ]
+
+SELECT_ACTS = [
+        ActType.CHOICE,
+        ActType.SELECTION,
+        ]
+
+STATE_ACTS = [
+        ActType.KNOW,
+        ActType.PROMISE,
+        ActType.REMEMBER,
+        ActType.STATE,
+        ActType.WHY,
+        ]
+
+THINKING_ACTS = [
+        ActType.EXPLAIN,
+        ActType.FEEL,
+        ActType.THINK,
+        ]
 
 
 @dataclass
@@ -155,6 +206,12 @@ class Converter(object):
                     record.subject, record.outline)
         elif ActType.LIGHT is record.type:
             return StructRecord(RecordType.LIGHT, record.type,
+                    record.subject, record.outline)
+        elif ActType.MARK is record.type:
+            return StructRecord(RecordType.SYMBOL, record.type,
+                    record.subject, record.outline)
+        elif record.type in FLAG_ACTS:
+            return StructRecord(RecordType.FLAG, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -383,6 +440,17 @@ class Formatter(object):
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
+            elif RecordType.FLAG is record.type:
+                ret = cls._to_flag(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
+            elif RecordType.SYMBOL is record.type:
+                ret = cls._to_symbol(record)
+                if ret:
+                    tmp.append(get_br())
+                    tmp.append(ret)
+                    tmp.append(get_br(2))
             elif RecordType.SKY is record.type:
                 ret = cls._to_sky(record)
                 if ret:
@@ -413,41 +481,59 @@ class Formatter(object):
     def _to_act(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
 
+        act = assertion.is_instance(record.act, ActType)
         subject = record.subject if record.subject else '――'
+        category = act.to_category()
         outline = record.outline if record.outline else '――'
         indent = get_indent(2)
 
-        if ActType.BE is record.act:
-            return f"{indent}[{subject}]（いる）{outline}"
-        elif ActType.COME is record.act:
-            return f"{indent}[{subject}]（来る）{outline}"
-        elif ActType.DO is record.act:
-            return f"{indent}[{subject}]（行動）{outline}"
-        elif ActType.DRAW is record.act:
-            return f"{indent}（描画）[{subject}]{outline}"
-        elif ActType.EXPLAIN is record.act:
-            return f"{indent}（説明）[{subject}]{outline}"
-        elif ActType.FACE is record.act:
-            return f"{indent}[{subject}]（表情）{outline}"
-        elif ActType.FEEL is record.act:
-            return f"{indent}[{subject}]（感情）{outline}"
-        elif ActType.GO is record.act:
-            return f"{indent}[{subject}]（去る）{outline}"
-        elif ActType.TALK is record.act:
-            return f"{subject}「{outline}」"
-        elif ActType.THINK is record.act:
-            return f"{subject}『{outline}』"
-        elif ActType.VOICE is record.act:
-            return f"{subject}（声）『{outline}』"
-        elif ActType.WEAR is record.act:
-            return f"{indent}[{subject}]（服装）{outline}"
+        if act in DIALOGUE_ACTS:
+            _outline = f"「{outline}」"
+            if ActType.VOICE is act:
+                _outline = f"（{category}）『{outline}』"
+            return f"{subject}{_outline}"
+        elif act in DOING_ACTS:
+            return f"{indent}[{subject}]（{category}）{outline}"
+        elif act in DRAW_ACTS:
+            return f"{indent}＠（{category}）[{subject}]{outline}"
+        elif act in FLAG_ACTS:
+            return f"{indent}！（{category}）[{subject}]{outline}"
+        elif act in STATE_ACTS:
+            return f"{indent}％（{category}）[{subject}]＝{outline}"
+        elif act in THINKING_ACTS:
+            return f"{indent}（{category}）[{subject}]{outline}"
+        elif act in SELECT_ACTS:
+            if ActType.CHOICE is act:
+                return f"{indent}！（{category}）[{subject}]＝{outline}"
+            else:
+                assert ActType.SELECTION is act
+                selects = outline.replace(' ','').split(',')
+                _selects = '/'.join(selects)
+                return f'{indent}？（{category}）[{subject}]＝{_selects}'
         else:
+            logger.warning(
+                    msg.ERR_FAIL_INVALID_DATA_WITH_DATA.format(data=f"act type in format: {PROC}"),
+                    act)
             return None
 
     def _to_comment(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
 
         return markdown_comment_style_of(record.subject)
+
+    def _to_flag(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        act = assertion.is_instance(record.act, ActType)
+        category = record.act.to_category()
+        subject = record.subject
+        outline = record.outline
+        indent = get_indent(2)
+
+        if ActType.FORESHADOW is act:
+            return f"<{subject}>＝{outline}"
+        else:
+            return f"<{subject}>〜{outline}"
 
     def _to_light(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)
@@ -502,6 +588,11 @@ class Formatter(object):
         clock = info.clock
 
         return f"○{stage}/{location}（{time}/{clock}） - {date}/{year} - [{camera}]"
+
+    def _to_symbol(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        return f"{record.outline}"
 
     def _to_title(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)

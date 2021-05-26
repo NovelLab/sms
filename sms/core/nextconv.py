@@ -34,8 +34,11 @@ def apply_scene_info_next(data: list) -> list:
         assert isinstance(record, BaseCode)
         if isinstance(record, SceneInfo):
             ret = Converter.conv_next_day(record, cache)
-            tmp.append(ret)
-            cache = ret
+            if ret:
+                tmp.append(ret)
+                cache = ret
+            else:
+                tmp.append(record)
         else:
             tmp.append(record)
 
@@ -51,25 +54,34 @@ class Converter(object):
     def conv_next_day(cls, info: SceneInfo, cache: SceneInfo) -> SceneInfo:
         assert isinstance(info, SceneInfo)
 
+        if 'nospin' in info.flags:
+            return None
+
         if cache:
             assert isinstance(cache, SceneInfo)
         else:
             return info
 
         year = info.year
-        if cls._is_next(info.year):
+        if cls._is_same(info.year):
+            year = cache.year
+        elif cls._is_next(info.year):
             year = cls._next_year_from(cache.year, info.year)
         elif cls._is_after(info.year):
             year = cls._after_year_from(cache.year, info.year)
 
         date = info.date
-        if cls._is_next(info.date):
+        if cls._is_same(info.date):
+            date = cache.date
+        elif cls._is_next(info.date):
             date = cls._next_date_from(int(year), cache.date, info.date)
         elif cls._is_after(info.date):
             date = cls._after_date_from(int(year), cache.date, info.date)
 
         time = info.time
-        if cls._is_next(info.time):
+        if cls._is_same(info.time):
+            time = cache.time
+        elif cls._is_next(info.time):
             time = cls._next_time_from(cache.time, info.time)
         elif cls._is_after(info.time):
             time = cls._after_time_from(cache.time, info.time)
@@ -134,6 +146,14 @@ class Converter(object):
 
         if text:
             return 'next' in text
+        else:
+            return False
+
+    def _is_same(text: str) -> bool:
+        assert isinstance(text, str)
+
+        if text:
+            return text in ('same', '-')
         else:
             return False
 

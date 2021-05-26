@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - scene transition info with title
+- why, promise and more new acts
 ### Fixed
 - missing build dir
 - unknown person's element warning
 - invalid char count of plot
 - path getter as deepest
 - call duplicate and missing
+- same duplicated next bug
+- clock replace by time name
+- scene info format
 
 ## [0.0.9] - 2021-05-12
 ### Added

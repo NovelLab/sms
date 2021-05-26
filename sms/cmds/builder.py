@@ -56,6 +56,7 @@ def build_project(args: Namespace) -> bool:
             BuildType.PLOT: None,
             BuildType.SCRIPT: None,
             BuildType.NOVEL: None,
+            BuildType.STRUCT: None,
             }
 
     if not _check_and_create_build_dir():
@@ -124,6 +125,8 @@ def build_project(args: Namespace) -> bool:
             logger.error(
                     msg.ERR_FAIL_MISSING_DATA.format(data=f"struct output data: {PROC}"))
             return False
+
+        builds[BuildType.STRUCT] = outputs
 
         if not Outputter.output_data(_get_build_path('struct'),
                 contents.cloned() + outputs):
