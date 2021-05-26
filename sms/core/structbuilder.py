@@ -47,6 +47,7 @@ class RecordType(Enum):
     LIGHT = auto()
     SYMBOL = auto()
     FLAG = auto()
+    TIME = auto()
 
 
 DIALOGUE_ACTS = [
@@ -89,6 +90,10 @@ STATE_ACTS = [
         ActType.REMEMBER,
         ActType.STATE,
         ActType.WHY,
+        ]
+
+TIME_ACTS = [
+        ActType.ELAPSE,
         ]
 
 THINKING_ACTS = [
@@ -212,6 +217,9 @@ class Converter(object):
                     record.subject, record.outline)
         elif record.type in FLAG_ACTS:
             return StructRecord(RecordType.FLAG, record.type,
+                    record.subject, record.outline)
+        elif record.type in TIME_ACTS:
+            return StructRecord(RecordType.TIME, record.type,
                     record.subject, record.outline)
         else:
             return None
@@ -445,6 +453,11 @@ class Formatter(object):
                 if ret:
                     tmp.append(ret)
                     tmp.append(get_br())
+            elif RecordType.TIME is record.type:
+                ret = cls._to_time(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
             elif RecordType.SYMBOL is record.type:
                 ret = cls._to_symbol(record)
                 if ret:
@@ -510,6 +523,8 @@ class Formatter(object):
                 selects = outline.replace(' ','').split(',')
                 _selects = '/'.join(selects)
                 return f'{indent}？（{category}）[{subject}]＝{_selects}'
+        elif act in TIME_ACTS:
+            return f"[XII] {outline}"
         else:
             logger.warning(
                     msg.ERR_FAIL_INVALID_DATA_WITH_DATA.format(data=f"act type in format: {PROC}"),
@@ -593,6 +608,11 @@ class Formatter(object):
         assert isinstance(record, StructRecord)
 
         return f"{record.outline}"
+
+    def _to_time(record: StructRecord) -> str:
+        assert isinstance(record, StructRecord)
+
+        return f"[＋] {record.outline}"
 
     def _to_title(record: StructRecord) -> str:
         assert isinstance(record, StructRecord)

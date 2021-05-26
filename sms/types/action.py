@@ -146,7 +146,6 @@ NORMAL_ACTS = [
         ActType.DISCARD,
         ActType.DO,
         ActType.DRAW,
-        ActType.ELAPSE,
         ActType.EXPLAIN,
         ActType.FACE,
         ActType.FEEL,
@@ -174,6 +173,7 @@ OBJECT_ACTS = [
 NO_SUBJECT_ACTS = [
         ActType.SKY,
         ActType.LIGHT,
+        ActType.ELAPSE,
         ActType.NOTE,
         ActType.PLOT,
         ActType.MARK,
