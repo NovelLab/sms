@@ -63,10 +63,16 @@ class TransitionInfo(object):
     clock: str
 
 
+class PersonInOut(Enum):
+    BE = auto()
+    IN = auto()
+    OUT = auto()
+    WEAR = auto()
+
+
 @dataclass
 class PersonInfo(object):
-    inout: str
-    wear: str
+    type: PersonInOut
 
 
 @dataclass
@@ -220,21 +226,14 @@ class TagConverter(object):
         info = assertion.is_instance(record.note, PersonInfo)
         subject = record.subject
         outline = record.outline
-        inout = info.inout
-        wear = info.wear
 
         if record.subject in callings:
             calling = callings[record.subject]
             outline = translate_tags_str(outline, calling)
-            inout = translate_tags_str(inout, calling)
-            wear = translate_tags_str(wear, calling)
         return InfoRecord(record.type, record.level, record.index,
-                translate_tags_str(subject, tags),
+                translate_tags_str(subject, tags, True, None),
                 translate_tags_str(outline, tags),
-                PersonInfo(
-                    translate_tags_str(inout, tags),
-                    translate_tags_str(wear, tags),
-                    ))
+                info)
 
     def _conv_transition(record: InfoRecord, tags: dict) -> InfoRecord:
         assert isinstance(record, InfoRecord)
@@ -345,22 +344,23 @@ class PersonInfoConv(object):
         assert isinstance(index, int)
         assert isinstance(record, Action)
 
-        inout = wear = ''
+        into = outto = wear = ''
+        type = PersonInOut.BE
 
         if ActType.BE is record.type:
-            inout = record.outline if record.outline else 'BE'
+            type = PersonInOut.BE
         elif ActType.COME is record.type:
-            inout = 'IN'
+            type = PersonInOut.IN
         elif ActType.GO is record.type:
-            inout = 'OUT'
+            type = PersonInOut.OUT
         elif ActType.WEAR is record.type:
-            wear = record.outline
+            type = PersonInOut.WEAR
         else:
             return None
 
         return InfoRecord(RecordType.PERSON_INFO, level, index,
                 record.subject, record.outline,
-                PersonInfo(inout, wear))
+                PersonInfo(type))
 
 
 class ItemInfoConv(object):
@@ -543,10 +543,9 @@ class Formatter(object):
         level = str(record.level)
         index = str(record.index)
         subject = record.subject
-        inout = info.inout
-        wear = info.wear
+        outline = record.outline
 
-        return cls._conv_person(level, index, subject, inout, wear)
+        return cls._conv_person(level, index, subject, info.type, outline)
 
     @classmethod
     def _to_transision(cls, record: InfoRecord) -> str:
@@ -600,20 +599,39 @@ class Formatter(object):
 
         return f"| {_level} | {_index} | {_subject} | {_have} |"
 
-    def _conv_person(level: str, index: str, subject: str, inout: str, wear: str) -> str:
+    def _conv_person(level: str, index: str, subject: str, type: PersonInOut,
+            outline: str) -> str:
         assert isinstance(level, str)
         assert isinstance(index, str)
         assert isinstance(subject, str)
-        assert isinstance(inout, str)
-        assert isinstance(wear, str)
+        assert isinstance(type, PersonInOut)
+        assert isinstance(outline, str)
+
+        be = into = outto = wear = ''
+
+        if PersonInOut.BE is type:
+            be = 'BE'
+        elif PersonInOut.IN is type:
+            into = 'IN'
+        elif PersonInOut.OUT is type:
+            outto = 'OUT'
+        elif PersonInOut.WEAR is type:
+            wear = 'WEAR'
+        else:
+            logger.warning(
+                    msg.ERR_FAIL_UNKNOWN_DATA_WITH_DATA.format(data=f"format person info: {PROC}"),
+                    type)
 
         _level = just_string_of(level, 4)
         _index = just_string_of(index, 4)
         _subject = just_string_of(subject, 16)
-        _inout = just_string_of(inout, 16)
-        _wear = just_string_of(wear, 16)
+        _be = just_string_of(be, 4)
+        _in = just_string_of(into, 4)
+        _out = just_string_of(outto, 4)
+        _wear = just_string_of(wear, 4)
+        _outline = just_string_of(outline, 16)
 
-        return f"| {_level} | {_index} | {_subject} | {_inout} | {_wear} |"
+        return f"| {_level} | {_index} | {_subject} | {_be} | {_in} | {_out} | {_wear} | {_outline} |"
 
     def _conv_transition(level: str, index: str, title: str, stage: str,
             time: str, clock: str, date: str, year: str, camera: str) -> str:
