@@ -59,6 +59,8 @@ DOING_ACTS = [
         ActType.BE,
         ActType.COME,
         ActType.DO,
+        ActType.DRINK,
+        ActType.EAT,
         ActType.GO,
         ]
 

@@ -47,6 +47,9 @@ class ActType(Enum):
     WHY = auto()
     SELECTION = auto()
     CHOICE = auto()
+    # food
+    EAT = auto()
+    DRINK = auto()
     # time
     ELAPSE = auto()
     # data
@@ -69,6 +72,8 @@ class ActType(Enum):
                 ActType.DISCARD: ('discard', 'dis'),
                 ActType.DO: ('do'),
                 ActType.DRAW: ('draw'),
+                ActType.DRINK: ('drink'),
+                ActType.EAT: ('eat'),
                 ActType.ELAPSE: ('elapse'),
                 ActType.EXPLAIN: ('explain'),
                 ActType.FACE: ('face'),
@@ -108,6 +113,8 @@ class ActType(Enum):
                 ActType.DISCARD: '廃棄',
                 ActType.DO: '行動',
                 ActType.DRAW: '描画',
+                ActType.DRINK: '飲む',
+                ActType.EAT: '食べる',
                 ActType.ELAPSE: '時間経過',
                 ActType.EXPLAIN: '説明',
                 ActType.FACE: '表情',
@@ -146,6 +153,8 @@ NORMAL_ACTS = [
         ActType.DISCARD,
         ActType.DO,
         ActType.DRAW,
+        ActType.DRINK,
+        ActType.EAT,
         ActType.EXPLAIN,
         ActType.FACE,
         ActType.FEEL,
