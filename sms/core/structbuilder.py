@@ -508,7 +508,7 @@ class Formatter(object):
                 _outline = f"（{category}）『{outline}』"
             return f"{subject}{_outline}"
         elif act in DOING_ACTS:
-            return f"{indent}[{subject}]（{category}）{outline}"
+            return f"{indent}〔{category}〕[{subject}]{outline}"
         elif act in DRAW_ACTS:
             return f"{indent}＠（{category}）[{subject}]{outline}"
         elif act in FLAG_ACTS:
