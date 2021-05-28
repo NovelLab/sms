@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - scene transition info with title
 - why, promise and more new acts
 - elapse time
+### Changed
+- info output format
 ### Fixed
 - missing build dir
 - unknown person's element warning
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - same duplicated next bug
 - clock replace by time name
 - scene info format
+- person info invalid tag convert
 
 ## [0.0.9] - 2021-05-12
 ### Added
