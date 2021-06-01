@@ -21,6 +21,7 @@ from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
 from sms.types.action import ActType
 from sms.types.instruction import InstType
+from sms.utils.dicts import dict_sorted
 from sms.utils.log import logger
 from sms.utils.strtranslate import translate_tags_str
 from sms.utils.strtranslate import translate_tags_text_list
@@ -88,7 +89,7 @@ def build_novel(story_data: StoryData, tags: dict, callings: dict,
     if not formatted:
         return None
 
-    translated = translate_tags_text_list(formatted, tags)
+    translated = translate_tags_text_list(formatted, dict_sorted(tags, True))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=PROC))
 
@@ -137,14 +138,14 @@ class Converter(object):
 
         if ActType.BR is record.type:
             return NovelRecord(RecordType.BR, '', [])
+        elif ActType.MARK is record.type:
+            return NovelRecord(RecordType.SYMBOL, record.subject, [record.outline])
         elif not record.descs:
             return None
         elif ActType.NOTE is record.type:
             return NovelRecord(RecordType.NOTE, record.subject, record.descs)
         elif ActType.PLOT is record.type:
             return None
-        elif ActType.MARK is record.type:
-            return NovelRecord(RecordType.SYMBOL, record.subject, record.descs)
         elif ActType.TITLE is record.type:
             return NovelRecord(RecordType.TITLE, record.subject, [], -1)
         elif record.type in [ActType.NONE, ActType.SAME]:
@@ -204,7 +205,7 @@ class TagConverter(object):
         assert isinstance(callings, dict)
 
         if record.subject in callings:
-            calling = callings[record.subject]
+            calling = dict_sorted(callings[record.subject], True)
             return NovelRecord(record.type,
                     calling['S'],
                     [translate_tags_str(d, calling) for d in record.descs],

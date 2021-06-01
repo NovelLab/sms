@@ -43,7 +43,10 @@ def join_descs(descs: list) -> str:
     for line in descs:
         assert isinstance(line, str)
         _ = line if line.endswith(('。', '、', '」', '』', '？', '！')) else line + '。'
-        tmp += _
+        if tmp.endswith(('？', '！')):
+            tmp += '　' + _
+        else:
+            tmp += _
     return tmp
 
 

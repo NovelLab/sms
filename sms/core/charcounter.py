@@ -121,7 +121,7 @@ class CharCounter(object):
             else:
                 # text
                 for level in range(len(indices)):
-                    descs[level][indices[level]] += record
+                    descs[level][indices[level]] += rid_rn(record)
 
         for level in range(len(indices)):
             tmp.extend(Converter.counts_from(
@@ -175,7 +175,7 @@ class CharCounter(object):
             else:
                 # text
                 for level in range(len(indices)):
-                    descs[level][indices[level]] += record
+                    descs[level][indices[level]] += rid_rn(record)
 
         for level in range(len(indices)):
             tmp.extend(Converter.counts_from(

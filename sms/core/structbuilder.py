@@ -19,6 +19,7 @@ from sms.objs.sceneend import SceneEnd
 from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
 from sms.types.action import ActType, NORMAL_ACTS, OBJECT_ACTS
+from sms.utils.dicts import dict_sorted
 from sms.utils import assertion
 from sms.utils.log import logger
 from sms.utils.strtranslate import translate_tags_str, translate_tags_text_list
@@ -151,7 +152,7 @@ def build_struct(story_data: StoryData, tags: dict, callings: dict,
     if not formatted:
         return None
 
-    translated = translate_tags_text_list(formatted, tags)
+    translated = translate_tags_text_list(formatted, dict_sorted(tags, True))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=PROC))
 
@@ -271,13 +272,14 @@ class TagConverter(object):
         assert isinstance(callings, dict)
 
         tmp = []
+        _tags = dict_sorted(tags)
 
         for record in data:
             assert isinstance(record, StructRecord)
             if RecordType.SPIN is record.type:
-                tmp.append(cls._conv_spin(record, tags))
+                tmp.append(cls._conv_spin(record, _tags))
             elif record.type in [RecordType.ACT, RecordType.OBJECT, RecordType.PERSON]:
-                tmp.append(cls._conv_act(record, tags, callings))
+                tmp.append(cls._conv_act(record, _tags, callings))
             else:
                 tmp.append(record)
 
@@ -291,7 +293,7 @@ class TagConverter(object):
         assert isinstance(callings, dict)
 
         if record.subject in callings:
-            calling = callings[record.subject]
+            calling = dict_sorted(callings[record.subject], True)
             return StructRecord(record.type, record.act,
                     calling['S'],
                     translate_tags_str(record.outline, calling),

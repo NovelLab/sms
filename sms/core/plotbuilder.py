@@ -14,6 +14,7 @@ from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
 from sms.types.action import ActType
 from sms.utils.log import logger
+from sms.utils.dicts import dict_sorted
 from sms.utils.strings import get_indent_text
 from sms.utils.strtranslate import translate_tags_text_list
 
@@ -58,7 +59,7 @@ def build_plot(story_data: StoryData, tags: dict) -> OutputsData:
         logger.error(msg.ERR_FAIL_MISSING_DATA.format(data=f"formatted plots: {PROC}"))
         return None
 
-    translated = translate_tags_text_list(formatted, tags)
+    translated = translate_tags_text_list(formatted, dict_sorted(tags, True))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=PROC))
 

@@ -15,13 +15,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - missing build dir
 - unknown person's element warning
-- invalid char count of plot
+- invalid char count
 - path getter as deepest
 - call duplicate and missing
 - same duplicated next bug
 - clock replace by time name
 - scene info format
 - person info invalid tag convert
+- comment out ignored
+- white space inserted after symbol
 
 ## [0.0.9] - 2021-05-12
 ### Added
