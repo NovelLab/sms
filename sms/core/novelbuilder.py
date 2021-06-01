@@ -138,14 +138,14 @@ class Converter(object):
 
         if ActType.BR is record.type:
             return NovelRecord(RecordType.BR, '', [])
+        elif ActType.MARK is record.type:
+            return NovelRecord(RecordType.SYMBOL, record.subject, [record.outline])
         elif not record.descs:
             return None
         elif ActType.NOTE is record.type:
             return NovelRecord(RecordType.NOTE, record.subject, record.descs)
         elif ActType.PLOT is record.type:
             return None
-        elif ActType.MARK is record.type:
-            return NovelRecord(RecordType.SYMBOL, record.subject, record.descs)
         elif ActType.TITLE is record.type:
             return NovelRecord(RecordType.TITLE, record.subject, [], -1)
         elif record.type in [ActType.NONE, ActType.SAME]:
