@@ -56,6 +56,7 @@ class RecordType(Enum):
 NORMAL_DESCS = [
         RecordType.DESCRIPTION,
         RecordType.DIALOGUE,
+        RecordType.VOICE,
         ]
 
 
