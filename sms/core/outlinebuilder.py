@@ -12,6 +12,7 @@ from sms.objs.basecode import BaseCode
 from sms.objs.sceneinfo import SceneInfo
 from sms.syss import messages as msg
 from sms.utils.log import logger
+from sms.utils.dicts import dict_sorted
 from sms.utils.strings import get_indent_text
 from sms.utils.strtranslate import translate_tags_text_list
 
@@ -52,7 +53,7 @@ def build_outline(story_data: StoryData, tags: dict) -> OutputsData:
     if not formatted:
         return None
 
-    translated = translate_tags_text_list(formatted, tags)
+    translated = translate_tags_text_list(formatted, dict_sorted(tags, True))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=PROC))
 

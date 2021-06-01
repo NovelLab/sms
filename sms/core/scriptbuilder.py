@@ -20,6 +20,7 @@ from sms.syss import messages as msg
 from sms.types.action import ActType
 from sms.types.instruction import InstType
 from sms.utils import assertion
+from sms.utils.dicts import dict_sorted
 from sms.utils.log import logger
 from sms.utils.strtranslate import translate_tags_str
 from sms.utils.strtranslate import translate_tags_text_list
@@ -94,7 +95,7 @@ def build_script(story_data: StoryData, tags: dict, callings: dict,
     if not scripts:
         return None
 
-    updated_tags = TagConverter.conv_callings_and_tags(scripts, tags, callings)
+    updated_tags = TagConverter.conv_callings_and_tags(scripts, dict_sorted(tags, True), callings)
     if not updated_tags:
         return None
 
@@ -102,7 +103,7 @@ def build_script(story_data: StoryData, tags: dict, callings: dict,
     if not formatted:
         return None
 
-    translated = translate_tags_text_list(formatted, tags)
+    translated = translate_tags_text_list(formatted, dict_sorted(tags, True))
 
     logger.debug(msg.PROC_SUCCESS.format(proc=PROC))
 
@@ -239,7 +240,7 @@ class TagConverter(object):
         assert isinstance(callings, dict)
 
         if record.subject in callings:
-            calling = callings[record.subject]
+            calling = dict_sorted(callings[record.subject], True)
             return ScriptRecord(record.type,
                     calling['S'],
                     [translate_tags_str(d, calling) for d in record.descs],
