@@ -9,6 +9,7 @@ TODO note
 - stage count in struct or scene info
 - auto sky state when ext
 - action mode
+- 作業量log
 
 ## Bug fix
 
