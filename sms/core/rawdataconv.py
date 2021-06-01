@@ -39,6 +39,9 @@ def raw_src_objects_from(data: str) -> list:
                 srcs.append(Converter.to_src(current, copy.deepcopy(tmp)))
             current = _get_scene_tag(line)
             tmp = []
+        elif line.startswith('# '):
+            # source comment
+            continue
         elif line:
             tmp.append(line)
         else:
