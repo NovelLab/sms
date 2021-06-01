@@ -158,7 +158,7 @@ class Converter(object):
         elif ActType.NOTE is record.type:
             return ScriptRecord(RecordType.NOTE, record.subject, record.descs)
         elif ActType.MARK is record.type:
-            return ScriptRecord(RecordType.SYMBOL, record.subject, record.descs)
+            return ScriptRecord(RecordType.SYMBOL, record.subject, [record.outline])
         elif ActType.PLOT is record.type:
             return None
         elif ActType.TITLE is record.type:
