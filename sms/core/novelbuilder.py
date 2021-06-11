@@ -311,10 +311,12 @@ class Formatter(object):
 
         text = join_descs(_conv_dialogue_mark_in_dialogues(record.descs))
         _text = text.rstrip('。') if text.endswith('。') else text
-        if _text.startswith(start):
-            return _text
-        else:
+        if _text.startswith(start) and not _text.endswith(end):
+            return _text if _text.endswith(('、', '。', '！', '？', '!', '?')) else f"{_text}。"
+        elif not _text.startswith(start):
             return f"{start}{_text}{end}"
+        else:
+            return _text
 
     def _to_symbol(record: NovelRecord) -> str:
         assert isinstance(record, NovelRecord)
