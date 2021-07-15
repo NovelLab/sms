@@ -15,4 +15,3 @@ TODO note
 ## Bug fix
 
 - plot char count not sums calc
-- 強調表示で**後にスペース開けてはいけない**
