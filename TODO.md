@@ -10,7 +10,9 @@ TODO note
 - auto sky state when ext
 - action mode
 - 作業量log
+- add action: hear, occur
 
 ## Bug fix
 
 - plot char count not sums calc
+- 強調表示で**後にスペース開けてはいけない**

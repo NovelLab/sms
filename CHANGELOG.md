@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - info output format
 ### Fixed
+- rubi translation
 - missing build dir
 - unknown person's element warning
 - invalid char count

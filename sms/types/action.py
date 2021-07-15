@@ -40,7 +40,9 @@ class ActType(Enum):
     THINK = auto()
     VOICE = auto()
     # info
+    HEAR = auto()
     KNOW = auto()
+    OCCUR = auto()
     PROMISE = auto()
     REMEMBER = auto()
     STATE = auto()
@@ -81,11 +83,13 @@ class ActType(Enum):
                 ActType.FORESHADOW: ('foreshadow', 'FS'),
                 ActType.GO: ('go'),
                 ActType.HAVE: ('have'),
+                ActType.HEAR: ('hear'),
                 ActType.KNOW: ('know'),
                 ActType.LIGHT: ('light',),
                 ActType.MARK: ('mark'),
                 ActType.NONE: ('none'),
                 ActType.NOTE: ('note'),
+                ActType.OCCUR: ('occur'),
                 ActType.PAYOFF: ('payoff', 'PO'),
                 ActType.PLOT: ('plot'),
                 ActType.PROMISE: ('promise', 'prom'),
@@ -122,11 +126,13 @@ class ActType(Enum):
                 ActType.FORESHADOW: '伏線',
                 ActType.GO: '行く',
                 ActType.HAVE: '持つ',
+                ActType.HEAR: '聞く',
                 ActType.KNOW: '知る',
                 ActType.LIGHT: '光量',
                 ActType.MARK: '記号',
                 ActType.NONE: 'なし',
                 ActType.NOTE: '備考',
+                ActType.OCCUR: '発生',
                 ActType.PAYOFF: '回収',
                 ActType.PLOT: 'ＰＬ',
                 ActType.PROMISE: '約束',
@@ -160,7 +166,9 @@ NORMAL_ACTS = [
         ActType.FEEL,
         ActType.GO,
         ActType.HAVE,
+        ActType.HEAR,
         ActType.KNOW,
+        ActType.OCCUR,
         ActType.PROMISE,
         ActType.REMEMBER,
         ActType.SELECTION,

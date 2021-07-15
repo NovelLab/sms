@@ -10,7 +10,7 @@ from sms.objs.baseobject import SObject
 from sms.objs.item import Item
 from sms.objs.nametag import NameTag, NameTagType
 from sms.objs.person import Person
-from sms.objs.rubi import Rubi
+from sms.objs.rubi import Rubi, RubiData
 from sms.objs.stage import Stage
 from sms.syss import messages as msg
 from sms.types.asset import AssetType
@@ -115,15 +115,19 @@ class Converter(object):
     def to_rubi(data: dict) -> Rubi:
         assert isinstance(data, dict)
 
-        tag = ''
-        for key in data.keys():
-            tag = key
-        name = data[tag][ELM_NAME]
-        rubi = Rubi(tag, name)
-        rubi.exclusions = data[tag]['exclusions']
-        rubi.is_always = data[tag]['always']
+        tmp = RubiData()
 
-        return rubi
+        for key, val in data.items():
+            assert isinstance(key, str)
+            assert isinstance(val, dict)
+            tag = key
+            name = data[tag][ELM_NAME]
+            rubi = Rubi(tag, name)
+            rubi.exclusions = data[tag]['exclusions']
+            rubi.is_always = data[tag]['always']
+            tmp.append(tag, rubi)
+
+        return tmp
 
 
 # Private Functions

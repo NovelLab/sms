@@ -10,7 +10,7 @@ from sms.objs.baseobject import SObject
 from sms.objs.item import Item
 from sms.objs.nametag import NameTag, NameTagType
 from sms.objs.person import Person
-from sms.objs.rubi import Rubi
+from sms.objs.rubi import Rubi, RubiData
 from sms.objs.stage import Stage
 from sms.syss import messages as msg
 from sms.syss.paths import FILE_CONFIG
@@ -123,7 +123,7 @@ def nametags_from(assets: AssetsDB) -> dict:
     return tmp
 
 
-def rubitags_from(assets: AssetsDB) -> dict:
+def rubitags_from(assets: AssetsDB) -> RubiData:
     assert isinstance(assets, AssetsDB)
 
     tmp = {}
@@ -131,8 +131,9 @@ def rubitags_from(assets: AssetsDB) -> dict:
     for key, val in assets.data.items():
         assert isinstance(key, str)
         assert isinstance(val, SObject)
-        if isinstance(val, Rubi):
-            tmp[key] = val
+        if isinstance(val, RubiData):
+            tmp = val
+            break
         else:
             continue
 

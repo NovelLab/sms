@@ -6,7 +6,7 @@ import re
 
 # My Modules
 from sms.db.outputsdata import OutputsData
-from sms.objs.rubi import Rubi
+from sms.objs.rubi import Rubi, RubiData
 from sms.syss import messages as msg
 from sms.utils.log import logger
 
@@ -21,9 +21,9 @@ PROC = 'RUBI APPLYER'
 
 
 # Main
-def apply_rubi_in_novel_data(outputs: OutputsData, rubis: dict) -> OutputsData:
+def apply_rubi_in_novel_data(outputs: OutputsData, rubis: RubiData) -> OutputsData:
     assert isinstance(outputs, OutputsData)
-    assert isinstance(rubis, dict)
+    assert isinstance(rubis, RubiData)
 
     logger.debug(msg.PROC_START.format(proc=PROC))
 
@@ -42,18 +42,21 @@ def apply_rubi_in_novel_data(outputs: OutputsData, rubis: dict) -> OutputsData:
 class Converter(object):
 
     @classmethod
-    def conv_rubi(cls, text: str, rubis: dict) -> str:
+    def conv_rubi(cls, text: str, rubis: RubiData) -> str:
         assert isinstance(text, str)
-        assert isinstance(rubis, dict)
+        assert isinstance(rubis, RubiData)
 
         tmp = text
 
-        for tag, rubi in rubis.items():
+        for tag, rubi in rubis.data.items():
             assert isinstance(tag, str)
             assert isinstance(rubi, Rubi)
-            # TODO: always
-
-            tmp = cls._add_rubi(tmp, tag, rubi.name)
+            # match test
+            if re.search(r'{}'.format(tag), tmp):
+                if rubi.is_done():
+                    continue
+                tmp = cls._add_rubi(tmp, tag, rubi.name)
+                rubi.done()
 
         return tmp
 
