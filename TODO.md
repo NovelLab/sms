@@ -10,6 +10,7 @@ TODO note
 - auto sky state when ext
 - action mode
 - 作業量log
+- add action: hear, occur
 
 ## Bug fix
 

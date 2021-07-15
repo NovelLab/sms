@@ -88,7 +88,9 @@ SELECT_ACTS = [
         ]
 
 STATE_ACTS = [
+        ActType.HEAR,
         ActType.KNOW,
+        ActType.OCCUR,
         ActType.PROMISE,
         ActType.REMEMBER,
         ActType.STATE,
