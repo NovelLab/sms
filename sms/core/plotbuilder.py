@@ -176,7 +176,7 @@ class Formatter(object):
         title = f"{record.index}. {record.title}\n"
 
         if record.subtitle:
-            subtitle = f"** {record.subtitle} **\n"
+            subtitle = f"**{record.subtitle}**\n"
             return [title, subtitle, plot]
         else:
             return [title, plot]
