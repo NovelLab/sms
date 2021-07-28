@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - person info invalid tag convert
 - comment out ignored
 - white space inserted after symbol
+- scene param contains space
 
 ## [0.0.9] - 2021-05-12
 ### Added

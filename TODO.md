@@ -15,3 +15,4 @@ TODO note
 ## Bug fix
 
 - plot char count not sums calc
+- シーンタイトルでルビかぶりすると本文に振られない
