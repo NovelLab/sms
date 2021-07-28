@@ -231,9 +231,22 @@ def _act_type_of(tag: str) -> ActType:
 def _get_member_tokens(line: str) -> tuple:
     assert isinstance(line, str)
     assert line.startswith('::')
+    assert '=' in line
 
-    tokens = rid_rn(line[2:]).split(' ')
-    if len(tokens) == 3 and tokens[1] == '=':
-        return tokens[0], tokens[2]
+    if ' ' in line:
+        # 空白を含む
+        tokens = rid_rn(line[2:]).split(' ')
+        if tokens[1] == '=':
+            if len(tokens) > 3:
+                return tokens[0], ' '.join(tokens[2:])
+            else:
+                return tokens[0], tokens[2]
+        else:
+            return None, None
     else:
-        return None, None
+        # 含まない
+        tokens = rid_rn(line[2:]).split('=')
+        if len(tokens) >= 3:
+            return tokens[0], '='.join(tokens[1:])
+        else:
+            return tokens[0], tokens[1]
