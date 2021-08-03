@@ -14,5 +14,5 @@ TODO note
 
 ## Bug fix
 
-- plot char count not sums calc
+- char count の各話表示戦闘のハイフン不必要
 - シーンタイトルでルビかぶりすると本文に振られない

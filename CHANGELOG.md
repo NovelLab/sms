@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - comment out ignored
 - white space inserted after symbol
 - scene param contains space
+- plot char counts(currently contains head spaces)
 
 ## [0.0.9] - 2021-05-12
 ### Added
