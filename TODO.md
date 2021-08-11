@@ -11,6 +11,7 @@ TODO note
 - action mode
 - 作業量log
 - add action: hear, occur
+- plot char count as total
 
 ## Bug fix
 
