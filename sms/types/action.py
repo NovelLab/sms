@@ -101,7 +101,7 @@ class ActType(Enum):
                 ActType.SKY: ('sky'),
                 ActType.STATE: ('state',),
                 ActType.TALK: ('talk', 'T'),
-                ActType.THINK: ('think',, 'K'),
+                ActType.THINK: ('think', 'K'),
                 ActType.TITLE: ('title'),
                 ActType.VOICE: ('voice'),
                 ActType.WEAR: ('wear'),
