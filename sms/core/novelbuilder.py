@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing import Any
 import re
 
-
 # My Modules
 from sms.commons.format import get_br, get_indent
 from sms.commons.format import join_descs
@@ -31,7 +30,6 @@ __all__ = (
         'build_novel',
         )
 
-
 # Define Constants
 PROC = 'BUILD NOVEL'
 
@@ -45,6 +43,7 @@ class RecordType(Enum):
     # symbol
     BR = auto()
     SYMBOL = auto()
+    PLAIN = auto()
     # data
     SCENE_END = auto()
     PR_START = auto()
@@ -155,6 +154,8 @@ class Converter(object):
             return NovelRecord(RecordType.DIALOGUE, record.subject, record.descs)
         elif ActType.VOICE is record.type:
             return NovelRecord(RecordType.VOICE, record.subject, record.descs)
+        elif ActType.PLAIN is record.type:
+            return NovelRecord(RecordType.PLAIN, record.subject, record.descs)
         else:
             return NovelRecord(RecordType.DESCRIPTION, record.subject, record.descs)
 
@@ -285,6 +286,11 @@ class Formatter(object):
                     else:
                         tmp.append(ret)
                         tmp.append(get_br())
+            elif RecordType.PLAIN is record.type:
+                ret = cls._to_plain(record)
+                if ret:
+                    tmp.append(ret)
+                    tmp.append(get_br())
             else:
                 continue
 
@@ -301,6 +307,11 @@ class Formatter(object):
         assert isinstance(record, NovelRecord)
 
         return join_descs(_conv_dialogue_mark(record.descs))
+
+    def _to_plain(record: NovelRecord) -> str:
+        assert isinstance(record, NovelRecord)
+
+        return "".join(record.descs)
 
     def _to_dialogue(record: NovelRecord, couple: tuple = ('「', '」')) -> str:
         assert isinstance(record, NovelRecord)
