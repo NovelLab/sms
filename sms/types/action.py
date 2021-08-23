@@ -63,6 +63,7 @@ class ActType(Enum):
     NOTE = auto()
     MARK = auto()
     BR = auto()
+    PLAIN = auto()
     SAME = auto()
 
     def to_checker(self) -> tuple:
@@ -91,6 +92,7 @@ class ActType(Enum):
                 ActType.NOTE: ('note'),
                 ActType.OCCUR: ('occur'),
                 ActType.PAYOFF: ('payoff', 'PO'),
+                ActType.PLAIN: ('plain', 'P'),
                 ActType.PLOT: ('plot'),
                 ActType.PROMISE: ('promise', 'prom'),
                 ActType.PUT: ('put'),
@@ -209,6 +211,7 @@ SYMBOL_ACTS = [
         ActType.NONE,
         ActType.NOTE,
         ActType.PLOT,
+        ActType.PLAIN,
         ActType.SAME,
         ActType.TITLE,
         ]

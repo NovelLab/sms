@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - why, promise and more new acts
 - elapse time
 - shorten action key
+- plain text
 ### Changed
 - info output format
 ### Fixed
