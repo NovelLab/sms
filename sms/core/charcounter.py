@@ -102,7 +102,7 @@ class CharCounter(object):
                     descs.append([''])
                 indices[level] += 1
                 titles[level].append(cls._title_from(record))
-                descs[level].append('#')
+                descs[level].append('')
             elif re.search(r'[0-9]+\.', record):
                 # scene head in outline and plot
                 pass
