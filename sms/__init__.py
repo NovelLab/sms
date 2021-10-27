@@ -5,7 +5,7 @@ import os
 
 
 # Define Shared Constants
-__version__ = "0.0.9-20"
+__version__ = "0.0.10-1"
 """str: Application version number."""
 
 

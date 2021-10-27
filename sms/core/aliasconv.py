@@ -30,25 +30,24 @@ PROC = 'ALIAS CONV'
 def apply_alias(data: list) -> list:
     assert isinstance(data, list)
 
+    # TODO: 現在はそのシーンのみでAlias置換を行っているが、レベルが深くなっても維持するように変更する
+
     tmp = []
-    alias = []
-    current = -1
+    alias = {}
 
     for record in data:
         assert isinstance(record, BaseCode)
         if isinstance(record, SceneInfo):
-            current += 1
-            alias.append({})
             tmp.append(record)
         elif isinstance(record, SceneEnd):
-            current -= 1
             tmp.append(record)
+            alias = {}
         elif isinstance(record, Instruction) and InstType.ALIAS is record.type:
             tokens = assertion.is_list(record.args)
-            alias[current][tokens[0]] = tokens[2]
+            alias[tokens[0]] = tokens[2]
         elif isinstance(record, Action):
             ret = TagConv.apply_alias_to_action(
-                    record, dict_sorted(alias[current], True))
+                    record, dict_sorted(alias, True))
             tmp.append(ret)
         else:
             tmp.append(record)
