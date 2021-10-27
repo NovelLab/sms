@@ -264,7 +264,7 @@ class Formatter(object):
         _total = just_string_of(str(total), 8, is_right=True)
         _space = just_string_of(str(space), 8, is_right=True)
 
-        return f"- {title}: {papers}p/{lines}n [{_total}c ({real}/{_space})c]"
+        return f"{title}: {papers}p/{lines}n [{_total}c ({real}/{_space})c]"
 
     def _title_of(type: BuildType) -> str:
         assert isinstance(type, BuildType)
